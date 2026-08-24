@@ -1,0 +1,222 @@
+/* ============================================================
+   共通スタイル（全ページで読み込み）
+   色などのテーマ設定は assets/js/theme.js を参照
+   ============================================================ */
+
+:root {
+  --brand-blue: #4d9bc1;
+  --brand-yellow: #f2c75c;
+  --brand-dark: #1e293b;
+  --brand-light: #f8fafc;
+}
+
+body {
+  line-height: 1.8;
+  color: #334155;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.4;
+  color: var(--brand-dark);
+}
+
+/* 本文中のリンク以外の見出しは折り返しを日本語向けに */
+h1, h2, h3, p, li {
+  word-break: normal;
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+/* --- レイアウト部品 --- */
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 1rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  color: var(--brand-dark);
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: var(--brand-yellow);
+  border-radius: 2px;
+}
+
+/* 中央寄せの小見出し（下線付き） */
+.heading-underline {
+  display: inline-block;
+  border-bottom: 2px solid var(--brand-yellow);
+  padding-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+}
+
+.page-header-bg {
+  background-color: var(--brand-dark);
+  background-image: radial-gradient(circle at right top, #2f4562, transparent 55%);
+}
+
+/* --- ナビゲーション --- */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--brand-blue);
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* --- アニメーション --- */
+.page-fade-enter {
+  animation: fadeIn 0.6s ease-out both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hero-animate {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeUp 0.8s ease-out forwards;
+}
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+@keyframes heroFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* スクロール連動フェード。
+   transform を上書きしないよう、必ず内側の要素に付けるか
+   単独要素に付けること（中央寄せの translateX とは併用しない） */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* アニメーションを好まない環境では無効化（アクセシビリティ） */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .hero-animate,
+  .page-fade-enter {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- カード類 --- */
+.member-card img {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.member-card:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- News 一覧 --- */
+.news-item {
+  display: block;
+  padding: 1.25rem 1rem;
+  margin: 0 -1rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+.news-item:hover {
+  background-color: #f1f5f9;
+}
+.news-item:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+.news-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+.badge-news    { background: rgba(77, 155, 193, 0.12); color: #2b6d8c; }
+.badge-result  { background: #fef3c7; color: #92400e; }
+.badge-media   { background: #f3e8ff; color: #6b21a8; }
+.badge-event   { background: #dcfce7; color: #166534; }
+.badge-default { background: #e2e8f0; color: #475569; }
+
+/* --- 記事本文（詳細ページ） --- */
+.article-body > * + * { margin-top: 1.25rem; }
+.article-body h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid var(--brand-blue);
+}
+.article-body h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 2rem;
+}
+.article-body p { color: #334155; }
+.article-body a {
+  color: var(--brand-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article-body ul,
+.article-body ol {
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+.article-body ol { list-style: decimal; }
+.article-body li + li { margin-top: 0.5rem; }
+.article-body img {
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  max-width: 100%;
+  height: auto;
+}
+.article-body figcaption {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+.article-body blockquote {
+  border-left: 4px solid #cbd5e1;
+  padding-left: 1rem;
+  color: #475569;
+}
