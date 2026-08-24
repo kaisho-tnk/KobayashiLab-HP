@@ -2,9 +2,8 @@
    サイト共通情報　← 研究室名・所属などを変えるときはここだけ編集
    ============================================================ */
 window.SITE = {
-  labShort: '〇〇',                   // ヘッダーロゴの色付き部分
-  labName: '東京大学 〇〇研究室',
-  affiliation: '大学院〇〇研究科 / 〇〇学部 〇〇学科',
+  labName: 'JAXA宇宙科学研究所 宇宙飛翔工学研究系 小林研究室',
+  affiliation: '東京大学大学院 工学系研究科 航空宇宙工学専攻 / 〇〇学部 〇〇学科',
   copyrightName: '〇〇 Laboratory, The University of Tokyo',
   copyrightYear: 2026,
   contactEmail: '',                   // 例: 'info@example.u-tokyo.ac.jp'（空なら非表示）

@@ -48,12 +48,13 @@
 
     var header = document.getElementById('site-header');
     if (header) {
+      var headerLabName = esc(SITE.labName || '').replace(/(宇宙飛翔工学研究系)\s+(小林研究室)/, '$1<br class="block">$2');
       header.className = 'fixed w-full top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm';
       header.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
           '<div class="flex justify-between items-center h-20">' +
-            '<a href="index.html" class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-brand-dark hover:opacity-80 transition-opacity">' +
-              '<span class="text-brand-blue">' + esc(SITE.labShort || '') + '</span>研究室' +
+            '<a href="index.html" class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-brand-dark hover:opacity-80 transition-opacity leading-tight">' +
+              headerLabName +
             '</a>' +
             '<nav class="hidden md:flex space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
             '<button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">' +

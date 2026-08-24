@@ -29,9 +29,9 @@
                 <div class="text-center mb-10 fade-up">
                     <h2 class="heading-underline">Staff</h2>
                 </div>
-                <div class="fade-up flex justify-center mb-20" style="transition-delay: 100ms;">
+                <div class="fade-up space-y-6 mb-20" style="transition-delay: 100ms;">
                     <!-- 教員カード（人数が増えたらこの div ごとコピー） -->
-                    <div class="member-card flex flex-col md:flex-row items-center md:items-start gap-8 bg-brand-light p-6 sm:p-8 rounded-xl border border-gray-100 w-full max-w-4xl hover:shadow-lg transition-shadow duration-300">
+                    <div class="member-card flex flex-col md:flex-row items-center md:items-start gap-8 bg-brand-light p-6 sm:p-8 rounded-xl border border-gray-100 w-full hover:shadow-lg transition-shadow duration-300">
                         <img src="https://placehold.co/400x400/f8fafc/4D9BC1?text=Prof." alt="〇〇 太郎 教授" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white shadow-md flex-shrink-0">
                         <div class="text-center md:text-left">
                             <h3 class="text-xl sm:text-2xl font-bold text-brand-dark">〇〇 太郎</h3>
@@ -50,7 +50,10 @@
                                     <dd>xxxx [at] xxxx.u-tokyo.ac.jp</dd>
                                 </div>
                             </dl>
-                            <p class="text-gray-600 mt-4 text-sm sm:text-base">学生への指導方針などの簡単な一言が入ります。自ら考え、手を動かすことを重視しています。</p>
+                            <div class="mt-4 space-y-2 text-sm sm:text-base">
+                              <p class="text-gray-600"><span class="font-bold text-gray-700">略歴</span>　東京大学大学院〇〇研究科修了。〇〇研究機関を経て、2020年より現職。</p>
+                              <p class="text-gray-600"><span class="font-bold text-gray-700">ひとこと</span>　学生への指導方針などの簡単な一言が入ります。自ら考え、手を動かすことを重視しています。</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -59,33 +62,49 @@
                 <div class="text-center mb-10 fade-up">
                     <h2 class="heading-underline">Students</h2>
                 </div>
-                <!-- 人数が増減しても崩れないよう、中央寄せの flex 折り返しで配置 -->
-                <ul class="fade-up flex flex-wrap justify-center gap-6" style="transition-delay: 100ms;">
+                <!-- 人数が増減しても崩れないよう、横長カードを縦に配置 -->
+                <ul class="fade-up space-y-6" style="transition-delay: 100ms;">
                     <!-- ▼ メンバー1人分（ここから </li> までをコピーして増やす） -->
-                    <li class="member-card w-[calc(50%-0.75rem)] sm:w-52 text-center bg-brand-light p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
-                        <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=D3" alt="大学院 太郎" class="w-24 h-24 rounded-full mx-auto object-cover mb-4 shadow-sm border-2 border-white">
+                    <li class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
+                      <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=D3" alt="大学院 太郎" class="w-24 h-24 rounded-full object-cover shadow-sm border-2 border-white flex-shrink-0">
+                      <div class="text-center sm:text-left">
                         <p class="text-base sm:text-lg font-bold text-gray-800">大学院 太郎</p>
                         <p class="text-sm text-brand-blue font-bold">博士課程 3年</p>
-                        <p class="text-xs text-gray-500 mt-2">研究テーマ：〇〇の解析</p>
+                        <p class="text-sm text-gray-600 mt-2">研究テーマ：〇〇の解析</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">趣味</span>　読書、ランニング</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　新しい発見を楽しみながら研究しています。</p>
+                      </div>
                     </li>
                     <!-- ▲ ここまで -->
-                    <li class="member-card w-[calc(50%-0.75rem)] sm:w-52 text-center bg-brand-light p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
-                        <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=M2" alt="研究 花子" class="w-24 h-24 rounded-full mx-auto object-cover mb-4 shadow-sm border-2 border-white">
+                    <li class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
+                      <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=M2" alt="研究 花子" class="w-24 h-24 rounded-full object-cover shadow-sm border-2 border-white flex-shrink-0">
+                      <div class="text-center sm:text-left">
                         <p class="text-base sm:text-lg font-bold text-gray-800">研究 花子</p>
                         <p class="text-sm text-brand-blue font-bold">修士課程 2年</p>
-                        <p class="text-xs text-gray-500 mt-2">研究テーマ：〇〇の開発</p>
+                        <p class="text-sm text-gray-600 mt-2">研究テーマ：〇〇の開発</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">趣味</span>　写真、カフェ巡り</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　研究室での学びを大切にしています。</p>
+                      </div>
                     </li>
-                    <li class="member-card w-[calc(50%-0.75rem)] sm:w-52 text-center bg-brand-light p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
-                        <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=M1" alt="実験 次郎" class="w-24 h-24 rounded-full mx-auto object-cover mb-4 shadow-sm border-2 border-white">
+                    <li class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
+                      <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=M1" alt="実験 次郎" class="w-24 h-24 rounded-full object-cover shadow-sm border-2 border-white flex-shrink-0">
+                      <div class="text-center sm:text-left">
                         <p class="text-base sm:text-lg font-bold text-gray-800">実験 次郎</p>
                         <p class="text-sm text-brand-blue font-bold">修士課程 1年</p>
-                        <p class="text-xs text-gray-500 mt-2">研究テーマ：〇〇の計測</p>
+                        <p class="text-sm text-gray-600 mt-2">研究テーマ：〇〇の計測</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">趣味</span>　音楽鑑賞、料理</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　実験を通して理解を深めています。</p>
+                      </div>
                     </li>
-                    <li class="member-card w-[calc(50%-0.75rem)] sm:w-52 text-center bg-brand-light p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
-                        <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=B4" alt="卒研 桜子" class="w-24 h-24 rounded-full mx-auto object-cover mb-4 shadow-sm border-2 border-white">
+                    <li class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">
+                      <img src="https://placehold.co/200x200/e2e8f0/94a3b8?text=B4" alt="卒研 桜子" class="w-24 h-24 rounded-full object-cover shadow-sm border-2 border-white flex-shrink-0">
+                      <div class="text-center sm:text-left">
                         <p class="text-base sm:text-lg font-bold text-gray-800">卒研 桜子</p>
                         <p class="text-sm text-brand-blue font-bold">学部 4年</p>
-                        <p class="text-xs text-gray-500 mt-2">研究テーマ：〇〇の評価</p>
+                        <p class="text-sm text-gray-600 mt-2">研究テーマ：〇〇の評価</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">趣味</span>　映画鑑賞、旅行</p>
+                        <p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　研究室の皆さんと楽しく活動しています。</p>
+                      </div>
                     </li>
                 </ul>
 
