@@ -49,12 +49,13 @@
     var header = document.getElementById('site-header');
     if (header) {
       var headerLabName = esc(SITE.labName || '').replace(/(宇宙飛翔工学研究系)\s+(小林研究室)/, '$1<br class="block">$2');
-      header.className = 'fixed w-full top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm';
+      header.className = 'fixed w-full top-0 z-50 bg-white border-b border-gray-200';
       header.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
           '<div class="flex justify-between items-center h-20">' +
-            '<a href="index.html" class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-brand-dark hover:opacity-80 transition-opacity leading-tight">' +
-              headerLabName +
+            '<a href="index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity">' +
+              '<img src="assets/img/icon.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
+              '<span class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight">' + headerLabName + '</span>' +
             '</a>' +
             '<nav class="hidden md:flex space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
             '<button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">' +
@@ -77,26 +78,35 @@
     var footer = document.getElementById('site-footer');
     if (footer) {
       var links = NAV.map(function (n) {
-        return '<a href="' + n.href + '" class="hover:text-brand-yellow transition-colors">' + esc(n.label) + '</a>';
+        return '<a href="' + n.href + '" class="hover:text-white transition-colors">' + esc(n.label) + '</a>';
+      }).join('');
+      var relatedLinks = (SITE.relatedLinks || []).map(function (l) {
+        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" class="inline-flex items-center h-6 rounded overflow-hidden hover:opacity-80 transition-opacity">' +
+          '<img src="' + esc(l.img) + '" alt="' + esc(l.label) + '" class="h-full w-auto object-contain">' +
+        '</a>';
       }).join('');
       var extra = '';
-      if (SITE.address) extra += '<p class="text-sm text-gray-400">' + esc(SITE.address) + '</p>';
+      if (SITE.address) extra += '<p class="text-sm text-gray-500">' + esc(SITE.address) + '</p>';
       if (SITE.contactEmail) {
-        extra += '<p class="text-sm text-gray-400">Contact: <a href="mailto:' + esc(SITE.contactEmail) +
-          '" class="hover:text-brand-yellow underline">' + esc(SITE.contactEmail) + '</a></p>';
+        extra += '<p class="text-sm text-gray-500">Contact: <a href="mailto:' + esc(SITE.contactEmail) +
+          '" class="hover:text-white underline">' + esc(SITE.contactEmail) + '</a></p>';
       }
 
-      footer.className = 'bg-brand-dark text-white py-12 mt-auto';
+      footer.className = 'bg-brand-dark text-white py-14 mt-auto';
       footer.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">' +
-          '<p class="text-xl font-bold mb-2 tracking-wider">' + esc(SITE.labName || '') + '</p>' +
-          '<p class="text-sm text-gray-400 mb-4">' + esc(SITE.affiliation || '') + '</p>' +
+          '<p class="text-lg font-semibold mb-2 tracking-wide">' + esc(SITE.labName || '') + '</p>' +
+          '<p class="text-sm text-gray-500 mb-4">' + esc(SITE.affiliation || '') + '</p>' +
           (extra ? '<div class="mb-6 space-y-1">' + extra + '</div>' : '') +
-          '<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8 text-sm text-gray-400" aria-label="フッターナビゲーション">' +
+          '<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-sm text-gray-500" aria-label="フッターナビゲーション">' +
             links +
-            '<a href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener" class="hover:text-brand-yellow transition-colors">東京大学公式サイト</a>' +
           '</nav>' +
-          '<p class="text-gray-500 text-sm">&copy; ' + esc(SITE.copyrightYear || new Date().getFullYear()) + ' ' + esc(SITE.copyrightName || '') + '</p>' +
+          (relatedLinks
+            ? '<nav class="flex flex-wrap justify-center items-center gap-3 mb-8 pt-6 border-t border-white/10" aria-label="関連リンク">' +
+                relatedLinks +
+              '</nav>'
+            : '') +
+          '<p class="text-gray-600 text-sm">&copy; ' + esc(SITE.copyrightYear || new Date().getFullYear()) + ' ' + esc(SITE.copyrightName || '') + '</p>' +
         '</div>';
     }
   }
@@ -288,6 +298,36 @@
       '</article>';
   }
 
+  /* ---------- URLハッシュへのスクロール（#member-3 等） ----------
+     Tailwind CDN はクラスからスタイルを実行時に生成するため、
+     ブラウザ標準のアンカージャンプがレイアウト確定前に起きてズレることがある。
+     フォント読み込み・スタイル適用が落ち着いてから改めてスクロールし直す。 */
+  function scrollToHashTarget() {
+    var hash = window.location.hash;
+    if (!hash) return;
+    var target;
+    try { target = document.querySelector(hash); } catch (e) { return; }
+    if (!target) return;
+
+    function doScroll() {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      target.classList.add('is-highlighted');
+      var clearHighlight = function () {
+        target.classList.remove('is-highlighted');
+        target.removeEventListener('animationend', clearHighlight);
+      };
+      target.addEventListener('animationend', clearHighlight);
+      setTimeout(clearHighlight, 2200); // アニメーション無効環境などの保険
+    }
+    // 2フレーム待ってレイアウト・スタイル適用の完了後に再スクロール
+    requestAnimationFrame(function () {
+      requestAnimationFrame(doScroll);
+    });
+    // フォント読み込みなどでさらに高さが変わるケースの保険
+    window.addEventListener('load', doScroll);
+    setTimeout(doScroll, 400);
+  }
+
   /* ---------- 初期化 ---------- */
   document.addEventListener('DOMContentLoaded', function () {
     renderChrome();
@@ -302,5 +342,6 @@
     if (detail) renderNewsDetail(detail);
 
     initScrollAnimation();
+    scrollToHashTarget();
   });
 })();

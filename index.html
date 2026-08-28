@@ -22,63 +22,179 @@
     <header id="site-header"></header>
 
     <main class="flex-grow">
-        <!-- Hero：ヘッダー高さ(5rem)を差し引いた高さにして、下端が切れないようにする -->
-        <section class="relative mt-20 min-h-[560px] h-[calc(100svh-5rem)] flex items-center justify-center overflow-hidden">
-            <div class="absolute inset-0 z-0 bg-brand-dark">
-                <img id="hero-img" src="assets/img/icon.png" alt="研究室の風景" class="w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 bg-brand-dark/50"></div>
+        <!-- Hero：コンパクトな帯レイアウト -->
+        <section class="relative mt-20 overflow-hidden">
+            <div class="absolute inset-0 z-0 bg-brand-dark overflow-hidden">
+                <!--
+                  動画を用意できるまでは poster 画像（フォールバック）だけが表示されます。
+                  実際のATRIUMエンジン着火試験の映像・画像が用意でき次第、
+                  assets/video/hero-ignition.mp4 と assets/img/hero-ignition-poster.jpg を差し替えてください。
+                -->
+                <video id="hero-video" autoplay muted loop playsinline
+                       poster="https://placehold.co/1920x1080/1e293b/1e293b?text=ATRIUM+Engine+Ignition"
+                       class="w-full h-full object-cover opacity-70">
+                    <source src="assets/video/hero-ignition.mp4" type="video/mp4">
+                </video>
+                <div class="absolute inset-0 bg-brand-dark/60"></div>
             </div>
-            <div class="relative z-10 text-center px-4 py-12 max-w-4xl mx-auto">
-                <span class="hero-animate inline-block py-1 px-4 rounded-full bg-brand-yellow text-brand-dark font-bold text-xs sm:text-sm mb-6 tracking-widest shadow-md">
-                    THE UNIVERSITY OF TOKYO
+            <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+                <span class="hero-animate inline-block text-white/70 font-medium text-xs sm:text-sm mb-4 tracking-[0.2em]">
+                    RESEARCH LABORATORY
                 </span>
-                <h1 class="hero-animate delay-100 text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
-                    世界を変える、<br class="md:hidden">次世代の研究拠点へ
+                <h1 class="hero-animate delay-100 text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-4 leading-snug">
+                    世界を変える、次世代の研究拠点へ
                 </h1>
-                <p class="hero-animate delay-200 text-base sm:text-lg md:text-xl text-gray-100 mb-10 drop-shadow-md">
-                    基礎から応用まで、分野の垣根を超えた挑戦を続けています。<br class="hidden md:block">
-                    知の創造を通じて、社会に貢献する技術を育みます。
+                <p class="hero-animate delay-200 text-sm sm:text-base text-gray-300 mb-8 max-w-xl">
+                    基礎から応用まで、分野の垣根を超えた挑戦を続けています。知の創造を通じて、社会に貢献する技術を育みます。
                 </p>
-                <div class="hero-animate delay-300 flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="research.html" class="px-8 py-4 bg-brand-blue text-white font-bold rounded-full hover:bg-blue-600 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 text-lg text-center">研究テーマを見る</a>
-                    <a href="members.html" class="px-8 py-4 bg-white text-brand-blue font-bold rounded-full hover:bg-gray-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 text-lg text-center">メンバー紹介</a>
+                <div class="hero-animate delay-300 flex flex-wrap gap-3">
+                    <a href="research.html" class="px-6 py-2.5 bg-white text-brand-dark font-medium rounded-full hover:bg-gray-100 transition-colors duration-300 text-sm">研究テーマを見る</a>
+                    <a href="facilities.html" class="px-6 py-2.5 border border-white/40 text-white font-medium rounded-full hover:bg-white/10 transition-colors duration-300 text-sm">研究拠点を見る</a>
                 </div>
             </div>
         </section>
 
         <!-- Recent News（data/news.js から自動生成） -->
-        <section class="section-padding bg-brand-light">
+        <section class="py-14 sm:py-16 bg-brand-light">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-8">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-brand-dark">Recent News</h2>
-                    <a href="news.html" class="text-brand-blue font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">News</h2>
+                    <a href="news.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
                         すべて見る
                         <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
-                <div class="fade-up bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6" style="transition-delay: 100ms;">
+                <div class="fade-up bg-white rounded-xl border border-gray-200 p-4 sm:p-6" style="transition-delay: 100ms;">
                     <ul id="news-preview" data-limit="3"></ul>
                 </div>
             </div>
         </section>
 
-        <!-- Research Overview -->
-        <section class="section-padding bg-white border-t border-gray-100">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title fade-up">Research Overview</h2>
-                <div class="grid md:grid-cols-2 gap-10 lg:gap-12 items-center">
-                    <div class="fade-up group rounded-xl overflow-hidden shadow-lg border border-gray-100">
-                        <img src="https://placehold.co/800x600/f8fafc/4D9BC1?text=Research+Overview" alt="研究概要" class="w-full aspect-[4/3] object-cover transform group-hover:scale-105 transition-transform duration-700">
-                    </div>
-                    <div class="fade-up" style="transition-delay: 150ms;">
-                        <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-brand-dark leading-snug">社会に貢献する技術を創り、<br class="hidden sm:block">次世代のリーダーを育てる</h3>
-                        <p class="text-gray-600 mb-6 text-base sm:text-lg">私たちの研究室では、〇〇分野における未解明の課題に対し、最新のアプローチを用いて研究を行っています。基礎的な理論の構築から、社会実装を見据えたシステム開発まで多角的にアプローチします。</p>
-                        <a href="research.html" class="group inline-flex items-center px-6 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-blue-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                            研究テーマの詳細を見る
-                            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                        </a>
-                    </div>
+        <!-- Research（研究テーマの3枚プレビュー） -->
+        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Research</h2>
+                    <a href="research.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
                 </div>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <a href="research-theme1.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5M19.8 15.3l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 20.25a48.25 48.25 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ1</p>
+                        <p class="text-xs text-gray-500">一言説明が入ります</p>
+                    </a>
+                    <a href="research-theme2.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 50ms;">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ2</p>
+                        <p class="text-xs text-gray-500">一言説明が入ります</p>
+                    </a>
+                    <a href="research-theme3.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 100ms;">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.98 0 13.788M12 12h.008v.008H12V12z"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ3</p>
+                        <p class="text-xs text-gray-500">一言説明が入ります</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Facilities（Researchセクションと同様の3枚プレビュー） -->
+        <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Facilities</h2>
+                    <a href="facilities.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <a href="facilities.html#location-1" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">〇〇キャンパス</p>
+                        <p class="text-xs text-gray-500">メインキャンパス</p>
+                    </a>
+                    <a href="facilities.html#location-2" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 50ms;">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">能代ロケット実験場</p>
+                        <p class="text-xs text-gray-500">実験場</p>
+                    </a>
+                    <a href="facilities.html#location-3" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 100ms;">
+                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+                        <p class="text-sm font-semibold text-brand-dark mb-1">〇〇実験場</p>
+                        <p class="text-xs text-gray-500">実験場</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Members（メンバープレビュー） -->
+        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Members</h2>
+                    <a href="members.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="fade-up flex flex-wrap gap-4" style="transition-delay: 100ms;">
+                    <a href="members.html#member-1" class="group flex flex-col items-center gap-2 w-16" title="〇〇 太郎（教授）">
+                        <span class="w-14 h-14 rounded-full bg-gray-200 border border-gray-200 group-hover:border-gray-300 transition-colors"></span>
+                        <span class="text-[11px] text-gray-500 text-center leading-tight">〇〇 太郎</span>
+                    </a>
+                    <a href="members.html#member-2" class="group flex flex-col items-center gap-2 w-16" title="大学院 太郎（博士課程3年）">
+                        <span class="w-14 h-14 rounded-full bg-gray-200 border border-gray-200 group-hover:border-gray-300 transition-colors"></span>
+                        <span class="text-[11px] text-gray-500 text-center leading-tight">大学院 太郎</span>
+                    </a>
+                    <a href="members.html#member-3" class="group flex flex-col items-center gap-2 w-16" title="研究 花子（修士課程2年）">
+                        <span class="w-14 h-14 rounded-full bg-gray-200 border border-gray-200 group-hover:border-gray-300 transition-colors"></span>
+                        <span class="text-[11px] text-gray-500 text-center leading-tight">研究 花子</span>
+                    </a>
+                    <a href="members.html#member-4" class="group flex flex-col items-center gap-2 w-16" title="実験 次郎（修士課程1年）">
+                        <span class="w-14 h-14 rounded-full bg-gray-200 border border-gray-200 group-hover:border-gray-300 transition-colors"></span>
+                        <span class="text-[11px] text-gray-500 text-center leading-tight">実験 次郎</span>
+                    </a>
+                    <a href="members.html#member-5" class="group flex flex-col items-center gap-2 w-16" title="卒研 桜子（学部4年）">
+                        <span class="w-14 h-14 rounded-full bg-gray-200 border border-gray-200 group-hover:border-gray-300 transition-colors"></span>
+                        <span class="text-[11px] text-gray-500 text-center leading-tight">卒研 桜子</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- Gallery（最新3枚のミニマルなサムネイル） -->
+        <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Gallery</h2>
+                    <a href="gallery.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="fade-up grid grid-cols-3 gap-3" style="transition-delay: 100ms;">
+                    <a href="gallery.html" class="group block rounded-lg overflow-hidden aspect-square bg-brand-blue/10">
+                        <img src="https://placehold.co/400x400/4D9BC1/ffffff?text=Photo+1" alt="燃焼実験の様子" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </a>
+                    <a href="gallery.html" class="group block rounded-lg overflow-hidden aspect-square bg-brand-yellow/20">
+                        <img src="https://placehold.co/400x400/F2C75C/ffffff?text=Photo+2" alt="研究室メンバー" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </a>
+                    <a href="gallery.html" class="group block rounded-lg overflow-hidden aspect-square bg-brand-blue/10">
+                        <img src="https://placehold.co/400x400/4D9BC1/ffffff?text=Photo+3" alt="学会発表" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 配属を検討している方へのCTA -->
+        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <a href="join.html" class="fade-up group inline-flex items-center px-6 py-3 bg-brand-dark text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                    配属を検討している方はこちら
+                    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
             </div>
         </section>
     </main>
@@ -94,334 +210,5 @@
             var img = document.getElementById('hero-img');
             if (img) img.classList.add('zoomed');
         });
-    </script>
-<script data-pplx-inline-edit>
-(function () {
-  if (window === window.top) return;
-
-  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
-  const MAX_FONT_BYTES = 500 * 1024;
-  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
-  let scrollForwarding = false;
-  let scrollRaf = 0;
-  let trustedTopOrigin = null;
-
-  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
-  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
-  // across multiple labels.
-  function matchesAllowedOrigin(origin) {
-    if (!origin) return false;
-    for (const entry of allowedParentOrigins) {
-      if (!entry.includes("*")) {
-        if (entry === origin) return true;
-        continue;
-      }
-      const pattern = new RegExp(
-        "^" +
-          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
-          "$",
-      );
-      if (pattern.test(origin)) return true;
-    }
-    return false;
-  }
-
-  // Trust decision: when the sender is same-origin-visible (event.origin is a
-  // real origin like https://www.perplexity.ai) we trust event.origin directly.
-  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
-  // broker's stamped `parentOrigin` to identify the top window. The fallback
-  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
-  // on the response path (see postToTrustedTop) to ensure replies can't be
-  // delivered to anyone but the actual top window of that claimed origin.
-  function getTrustedParentOrigin(event) {
-    const forwardedParentOrigin =
-      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
-    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
-    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
-  }
-
-  // All responses go to window.top with targetOrigin = the allowlisted origin.
-  // An attacker that iframes us inside their own null-origin broker can claim
-  // any parentOrigin they like, but the browser will drop the reply whenever
-  // the real top's origin doesn't match — so the screenshot never leaves.
-  function postToTrustedTop(message) {
-    if (!trustedTopOrigin) return;
-    try {
-      window.top.postMessage(message, trustedTopOrigin);
-    } catch (_error) {}
-  }
-
-  function inlineAll(original, clone) {
-    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
-
-    try {
-      const computedStyle = getComputedStyle(original);
-      // cssText on a computed style is the serialized declaration in modern
-      // Chromium/Safari — a single read beats enumerating ~400 longhand
-      // properties. Firefox returns "" here, so we fall back on empty.
-      const serialized = computedStyle.cssText;
-      if (serialized) {
-        clone.style.cssText = serialized;
-      } else {
-        const parts = new Array(computedStyle.length);
-        for (let index = 0; index < computedStyle.length; index += 1) {
-          const property = computedStyle[index];
-          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
-        }
-        clone.style.cssText = parts.join("");
-      }
-    } catch (_error) {}
-
-    const originalChildren = original.children;
-    const clonedChildren = clone.children;
-    for (
-      let index = 0;
-      index < originalChildren.length && index < clonedChildren.length;
-      index += 1
-    ) {
-      inlineAll(originalChildren[index], clonedChildren[index]);
-    }
-  }
-
-  function extractFontUrl(srcValue) {
-    const matches = [
-      ...srcValue.matchAll(
-        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
-      ),
-    ];
-    if (matches.length === 0) return null;
-    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
-    if (woff2) return woff2[1];
-    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
-    if (woff) return woff[1];
-    return matches[0][1];
-  }
-
-  // Cache resolved font URL -> data URI across captures. Fonts on a page
-  // essentially never change, and a batch run emits multiple captures back to
-  // back — without this we'd refetch + re-base64 every time.
-  const fontDataUriCache = new Map();
-  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
-
-  async function fetchAsDataUri(url) {
-    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
-    let dataUri = null;
-    try {
-      const response = await fetch(url, { mode: "cors", credentials: "omit" });
-      if (response.ok) {
-        const blob = await response.blob();
-        if (blob.size <= MAX_FONT_BYTES) {
-          dataUri = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () =>
-              resolve(typeof reader.result === "string" ? reader.result : null);
-            reader.onerror = () => resolve(null);
-            reader.readAsDataURL(blob);
-          });
-        }
-      }
-    } catch (_error) {
-      dataUri = null;
-    }
-    fontDataUriCache.set(url, dataUri);
-    return dataUri;
-  }
-
-  function collectFontFaceRuleTexts() {
-    const rules = [];
-    for (const sheet of document.styleSheets) {
-      let cssRules;
-      try {
-        cssRules = sheet.cssRules;
-      } catch (_error) {
-        continue;
-      }
-      if (!cssRules) continue;
-      for (const rule of cssRules) {
-        const cssText = rule.cssText || "";
-        if (cssText.startsWith("@font-face")) rules.push(cssText);
-      }
-    }
-    return rules;
-  }
-
-  async function buildInlinedFontCss() {
-    const ruleTexts = collectFontFaceRuleTexts();
-    if (ruleTexts.length === 0) return null;
-
-    const resolved = ruleTexts.map((cssText) => {
-      if (!SRC_DECLARATION_RE.test(cssText)) return null;
-      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
-      if (!srcMatch) return null;
-      const url = extractFontUrl(srcMatch[1]);
-      if (!url) return null;
-      try {
-        return { cssText, url: new URL(url, document.baseURI).href };
-      } catch (_error) {
-        return null;
-      }
-    });
-
-    const dataUris = await Promise.all(
-      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
-    );
-
-    const inlined = [];
-    let totalBytes = 0;
-    for (let index = 0; index < resolved.length; index += 1) {
-      const entry = resolved[index];
-      const dataUri = dataUris[index];
-      if (!entry || !dataUri) continue;
-      const approxBytes = dataUri.length * 0.75;
-      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
-      totalBytes += approxBytes;
-      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
-    }
-    return inlined.length > 0 ? inlined.join("\n") : null;
-  }
-
-  function stripExternal(clone) {
-    const images = clone.querySelectorAll("img");
-    for (let index = 0; index < images.length; index += 1) {
-      const src = images[index].getAttribute("src");
-      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
-    }
-
-    const elements = clone.querySelectorAll("*");
-    for (let index = 0; index < elements.length; index += 1) {
-      const style = elements[index].style.cssText;
-      if (style && style.includes("url(")) {
-        elements[index].style.cssText = style.replace(
-          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
-          "none",
-        );
-      }
-    }
-  }
-
-  function emitScroll() {
-    scrollRaf = 0;
-    if (!scrollForwarding) return;
-    postToTrustedTop({
-      type: "INLINE_EDIT_SCROLL",
-      scrollX: window.scrollX,
-      scrollY: window.scrollY,
-    });
-  }
-
-  window.addEventListener(
-    "scroll",
-    function () {
-      if (!scrollForwarding || scrollRaf) return;
-      scrollRaf = requestAnimationFrame(emitScroll);
-    },
-    { passive: true, capture: true },
-  );
-
-  async function handleCaptureRequest(event) {
-    const requestId = event.data.requestId;
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    function postResult(dataUrl) {
-      postToTrustedTop({
-        type: "INLINE_EDIT_SCREENSHOT_RESULT",
-        requestId,
-        dataUrl,
-        scrollX,
-        scrollY,
-      });
-    }
-
-    try {
-      // Wait for any pending web fonts to resolve so both inline metrics and
-      // the @font-face inlining below see the same loaded faces.
-      if (document.fonts && document.fonts.ready) {
-        try {
-          await document.fonts.ready;
-        } catch (_error) {}
-      }
-
-      const clone = document.documentElement.cloneNode(true);
-      inlineAll(document.documentElement, clone);
-
-      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
-      for (let index = 0; index < removedNodes.length; index += 1) {
-        removedNodes[index].remove();
-      }
-
-      stripExternal(clone);
-
-      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
-      // can resolve them — external font URLs aren't fetched during
-      // foreignObject rendering, which would otherwise force a fallback face
-      // and change text metrics.
-      const inlinedFontCss = await buildInlinedFontCss();
-      if (inlinedFontCss) {
-        const styleEl = document.createElement("style");
-        styleEl.textContent = inlinedFontCss;
-        const head = clone.querySelector("head");
-        if (head) head.appendChild(styleEl);
-        else clone.insertBefore(styleEl, clone.firstChild);
-      }
-
-      const html = new XMLSerializer().serializeToString(clone);
-      const svg =
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
-        '<foreignObject width="100%" height="100%">' +
-        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
-        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
-        html +
-        "</div></div></foreignObject></svg>";
-      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-      const image = new Image();
-      image.onload = function () {
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext("2d").drawImage(image, 0, 0);
-        postResult(canvas.toDataURL("image/png"));
-      };
-      image.onerror = function () {
-        postResult(null);
-      };
-      image.src = svgUrl;
-    } catch (_error) {
-      postResult(null);
-    }
-  }
-
-  window.addEventListener("message", function (event) {
-    if (!event.data) return;
-    // Only accept messages from the direct parent frame. Blocks sibling /
-    // unrelated-window postMessage senders that could otherwise reach us.
-    if (event.source !== window.parent) return;
-
-    const trustedParentOrigin = getTrustedParentOrigin(event);
-    if (!trustedParentOrigin) return;
-    trustedTopOrigin = trustedParentOrigin;
-
-    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
-      scrollForwarding = true;
-      emitScroll();
-      return;
-    }
-
-    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
-      scrollForwarding = false;
-      if (scrollRaf) cancelAnimationFrame(scrollRaf);
-      scrollRaf = 0;
-      return;
-    }
-
-    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
-
-    handleCaptureRequest(event);
-  });
-})();
-
-
-</script></body>
+    </script></body>
 </html>

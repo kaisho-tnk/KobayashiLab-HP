@@ -11,7 +11,18 @@ window.SITE = {
   nav: [
     { key: 'home',     label: 'Home',            href: 'index.html' },
     { key: 'news',     label: 'News',            href: 'news.html' },
-    { key: 'research', label: 'Research Themes', href: 'research.html' },
-    { key: 'members',  label: 'Members',         href: 'members.html' }
+    { key: 'research', label: 'Research', href: 'research.html' },
+    { key: 'facilities', label: 'Facilities',    href: 'facilities.html' },
+    { key: 'members',  label: 'Members',         href: 'members.html' },
+    { key: 'gallery',  label: 'Gallery',         href: 'gallery.html' },
+    { key: 'join',     label: 'Join Us',          href: 'join.html' }
+  ],
+  // フッター下部に並べる関連リンク（増減や書き換えはここだけでOK）
+  relatedLinks: [
+    { label: 'JAXA', href: 'https://www.jaxa.jp/index_j.html', img: 'assets/img/links/jaxa.png' },
+    { label: '宇宙科学研究所', href: 'https://www.isas.jaxa.jp/', img: 'assets/img/links/isas.png' },
+    { label: 'あいさすGATE', href: 'https://www.isas.jaxa.jp/home/research-portal/navi/', img: 'assets/img/links/aisasu-gate.png' },
+    { label: '東京大学航空宇宙工学科', href: 'https://www.aerospace.t.u-tokyo.ac.jp/', img: 'assets/img/links/todai-aero.png' },
+    { label: 'SOKENDAI 先端学術院 宇宙科学コース', href: 'https://www.isas.jaxa.jp/sokendai/', img: 'assets/img/links/sokendai.png' }
   ]
 };
