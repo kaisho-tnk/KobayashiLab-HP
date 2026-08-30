@@ -9,7 +9,7 @@ window.SITE = {
   contactEmail: '',                   // 例: 'info@example.u-tokyo.ac.jp'（空なら非表示）
   address: '',                        // 例: '東京都文京区本郷7-3-1 工学部〇号館 〇階'
   nav: [
-    { key: 'home',     label: 'Home',            href: 'index.html' },
+    { key: 'about',    label: 'About Us',        href: 'about.html' },
     { key: 'news',     label: 'News',            href: 'news.html' },
     { key: 'research', label: 'Research', href: 'research.html' },
     { key: 'facilities', label: 'Facilities',    href: 'facilities.html' },
