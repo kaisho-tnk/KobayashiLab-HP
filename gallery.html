@@ -22,57 +22,9 @@
             <p class="text-gray-500 mt-2">活動・実験の様子</p>
         </div>
 
-        <section class="section-padding">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                <!-- 写真は 3〜4列のグリッドで並べる。1枚追加するときは figure ブロックをコピーして増やす -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-
-                    <!-- ▼ 写真1枚分（ここから </figure> までをコピーして増やす） -->
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white">
-                        <div class="aspect-square overflow-hidden bg-brand-blue/10">
-                            <img src="https://placehold.co/600x600/4D9BC1/ffffff?text=Photo+1" alt="実験の様子" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">燃焼実験の様子</figcaption>
-                    </figure>
-                    <!-- ▲ ここまで -->
-
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white" style="transition-delay: 50ms;">
-                        <div class="aspect-square overflow-hidden bg-brand-yellow/20">
-                            <img src="https://placehold.co/600x600/F2C75C/ffffff?text=Photo+2" alt="研究室メンバー" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">研究室メンバー集合写真</figcaption>
-                    </figure>
-
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white" style="transition-delay: 100ms;">
-                        <div class="aspect-square overflow-hidden bg-brand-blue/10">
-                            <img src="https://placehold.co/600x600/4D9BC1/ffffff?text=Photo+3" alt="学会発表" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">学会発表の様子</figcaption>
-                    </figure>
-
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white" style="transition-delay: 150ms;">
-                        <div class="aspect-square overflow-hidden bg-brand-yellow/20">
-                            <img src="https://placehold.co/600x600/F2C75C/ffffff?text=Photo+4" alt="能代実験場" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">能代ロケット実験場での実験準備</figcaption>
-                    </figure>
-
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white" style="transition-delay: 200ms;">
-                        <div class="aspect-square overflow-hidden bg-brand-blue/10">
-                            <img src="https://placehold.co/600x600/4D9BC1/ffffff?text=Photo+5" alt="展示ブース" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">展示ブースの様子</figcaption>
-                    </figure>
-
-                    <figure class="fade-up group rounded-xl overflow-hidden border border-gray-200 bg-white" style="transition-delay: 250ms;">
-                        <div class="aspect-square overflow-hidden bg-brand-yellow/20">
-                            <img src="https://placehold.co/600x600/F2C75C/ffffff?text=Photo+6" alt="実験装置" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <figcaption class="p-3 text-sm text-gray-600">実験装置の組み立て</figcaption>
-                    </figure>
-
-                </div>
+        <section class="py-4 sm:py-6">
+            <div class="max-w-6xl mx-auto px-1 sm:px-2">
+                <div id="gallery-grid" class="gallery-grid"></div>
             </div>
         </section>
     </main>
@@ -81,6 +33,8 @@
 
     <script src="data/site.js"></script>
     <script src="data/news.js"></script>
+    <script src="data/gallery.js"></script>
     <script src="assets/js/site.js"></script>
+    <script src="assets/js/gallery.js"></script>
 </body>
 </html>

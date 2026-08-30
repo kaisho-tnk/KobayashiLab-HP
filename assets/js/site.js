@@ -298,19 +298,76 @@
       '</article>';
   }
 
+  /* ---------- Gallery（ホームのプレビューのみ。一覧本体は assets/js/gallery.js） ---------- */
+  function renderGalleryPreview(el) {
+    var limit = parseInt(el.getAttribute('data-limit') || '3', 10);
+    var posts = (window.GALLERY_POSTS || []).slice(0, limit);
+    if (!posts.length) return;
+    el.innerHTML = posts.map(function (p) {
+      var thumb = p.images && p.images[0];
+      return '<li>' +
+        '<button type="button" data-gallery-id="' + esc(p.id) + '" class="group block w-full rounded-lg overflow-hidden aspect-square bg-gray-100 cursor-pointer">' +
+          '<img src="' + esc(thumb) + '" alt="' + esc(p.title || '') + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">' +
+        '</button>' +
+      '</li>';
+    }).join('');
+
+    // クリックでモーダルを開く（一覧ページへは飛ばさない。assets/js/gallery.js が必要）
+    el.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-gallery-id]');
+      if (!btn) return;
+      var id = btn.getAttribute('data-gallery-id');
+      var post = posts.filter(function (p) { return p.id === id; })[0];
+      if (post && window.openGalleryModal) window.openGalleryModal(post);
+    });
+  }
+
   /* ---------- URLハッシュへのスクロール（#member-3 等） ----------
-     Tailwind CDN はクラスからスタイルを実行時に生成するため、
-     ブラウザ標準のアンカージャンプがレイアウト確定前に起きてズレることがある。
-     フォント読み込み・スタイル適用が落ち着いてから改めてスクロールし直す。 */
-  function scrollToHashTarget() {
-    var hash = window.location.hash;
+     このページに members.js / gallery.js のような「カードを後から書き込む」
+     スクリプトがある場合、site.js の DOMContentLoaded ハンドラの方が先に
+     登録されて先に実行されてしまい、この時点ではまだ対象カードがDOMに
+     存在しないことがある。そのため、この関数は site.js 側では自動実行せず
+     window.scrollToHashTarget として公開し、実際にカードを書き込み終えた
+     各スクリプト側（members.js 等）から、書き込み完了後に呼び出してもらう。 */
+  function scrollToHashTarget(hashArg) {
+    var hash = hashArg || window.location.hash;
     if (!hash) return;
     var target;
     try { target = document.querySelector(hash); } catch (e) { return; }
     if (!target) return;
 
+    // 既定の余白（16px）。対象要素に data-scroll-gap="0" のような指定があれば、
+    // そちらを優先する（例: セクション見出しは背景の境目にぴったり合わせたい、など）
+    var DEFAULT_EXTRA_GAP = 16;
+    var customGap = target.getAttribute('data-scroll-gap');
+    var EXTRA_GAP = customGap !== null && customGap !== '' && !isNaN(customGap)
+      ? Number(customGap)
+      : DEFAULT_EXTRA_GAP;
+
+    // スクロール先の要素（および、それを含む .fade-up な親）は、
+    // フェードインアニメーションの完了を待たず、最初から本来の位置・見た目にしておく。
+    // .fade-up には transition: transform 0.7s ... が付いているため、
+    // is-visible を付けるだけだと「0.7秒かけてゆっくり動く」ことになり、
+    // その間ずっと位置がズレて見え続けてしまう。transition を一瞬だけ無効化して
+    // 瞬時に最終位置へ反映させる。
+    var el = target;
+    while (el && el !== document.body) {
+      if (el.classList && el.classList.contains('fade-up') && !el.classList.contains('is-visible')) {
+        el.style.transition = 'none';
+        el.classList.add('is-visible');
+        void el.offsetHeight; // 強制リフローで即座に反映させる
+        el.style.transition = '';
+      }
+      el = el.parentElement;
+    }
+
     function doScroll() {
-      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      var header = document.getElementById('site-header');
+      var headerHeight = header ? header.getBoundingClientRect().height : 80;
+      var targetTop = target.getBoundingClientRect().top + window.scrollY;
+      var scrollTo = Math.max(0, targetTop - headerHeight - EXTRA_GAP);
+      window.scrollTo({ top: scrollTo, behavior: 'auto' });
+
       target.classList.add('is-highlighted');
       var clearHighlight = function () {
         target.classList.remove('is-highlighted');
@@ -319,14 +376,35 @@
       target.addEventListener('animationend', clearHighlight);
       setTimeout(clearHighlight, 2200); // アニメーション無効環境などの保険
     }
-    // 2フレーム待ってレイアウト・スタイル適用の完了後に再スクロール
+
     requestAnimationFrame(function () {
       requestAnimationFrame(doScroll);
     });
-    // フォント読み込みなどでさらに高さが変わるケースの保険
-    window.addEventListener('load', doScroll);
-    setTimeout(doScroll, 400);
   }
+
+  // members.js / gallery.js など、後からカードを書き込む側のスクリプトから
+  // 呼び出せるように公開しておく
+  window.scrollToHashTarget = scrollToHashTarget;
+
+  // 同一ページ内の #アンカー リンク（例: ヒーローの「研究テーマを見る」）は、
+  // クリックしてもページ遷移が起きずDOMContentLoadedが発火しないため、
+  // このままだとブラウザ標準のジャンプ（scroll-margin-top基準）で動いてしまう。
+  // クリックを横取りして、他のアンカーと同じ scrollToHashTarget に統一する。
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var hash = a.getAttribute('href');
+    if (!hash || hash === '#') return;
+    var target;
+    try { target = document.querySelector(hash); } catch (err) { return; }
+    if (!target) return; // 対象が無ければブラウザの標準動作に任せる
+
+    e.preventDefault();
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, '', window.location.pathname + window.location.search + hash);
+    }
+    scrollToHashTarget(hash);
+  });
 
   /* ---------- 初期化 ---------- */
   document.addEventListener('DOMContentLoaded', function () {
@@ -337,6 +415,9 @@
 
     var list = document.getElementById('news-list');
     if (list) renderNewsList(list);
+
+    var galleryPreview = document.getElementById('gallery-preview');
+    if (galleryPreview) renderGalleryPreview(galleryPreview);
 
     var detail = document.getElementById('news-detail');
     if (detail) renderNewsDetail(detail);
