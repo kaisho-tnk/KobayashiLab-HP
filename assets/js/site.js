@@ -41,6 +41,12 @@
   // 言語切り替え（setLang）の両方で共有するため、ここで定義しておく
   var TRANSITION_SHOW_DELAY = 200; // これより速く遷移が終われば何も表示しない（ms）
 
+  // ページ遷移アイキャッチの「表示予約タイマー」のID。
+  // 戻る/進むでbfcache復元されたとき、離脱前に仕掛けたこのタイマーが
+  // キャンセルされずに残っていると、復元後に突然発火してスピナーが
+  // 表示されたまま固まって見えるバグになるため、必ずここで一元管理する。
+  var pendingTransitionTimer = null;
+
   var LANG_KEY = 'site_lang';
   function getLang() {
     return window.localStorage && localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'ja';
@@ -52,7 +58,7 @@
     // 「時間がかかりそうなときだけスピナーを見せる」挙動に揃える
     var overlay = document.getElementById('page-transition-overlay');
     if (overlay) {
-      setTimeout(function () {
+      pendingTransitionTimer = setTimeout(function () {
         overlay.classList.add('is-visible');
       }, TRANSITION_SHOW_DELAY);
     }
@@ -651,16 +657,20 @@
       // 遷移はすぐに開始する。表示だけを TRANSITION_SHOW_DELAY だけ遅らせ、
       // それより先にページが切り替わってしまえばこのタイマーは意味を持たない
       // （＝速い遷移では一切見えない）。
-      setTimeout(function () {
+      pendingTransitionTimer = setTimeout(function () {
         overlay.classList.add('is-visible');
       }, TRANSITION_SHOW_DELAY);
       window.location.href = href;
     });
 
     // ブラウザの「戻る/進む」でこのページに復帰したとき（bfcache）、
-    // アイキャッチが表示されたまま固まって見えないようにリセットする
+    // アイキャッチが表示されたまま固まって見えないようにリセットする。
+    // 離脱前に仕掛けた「表示予約タイマー」が bfcache に凍結されたまま残っていて、
+    // 復元後に突然発火することがあるため、表示を消すだけでなくタイマー自体も
+    // 確実にキャンセルする。
     window.addEventListener('pageshow', function (e) {
       if (e.persisted) {
+        clearTimeout(pendingTransitionTimer);
         overlay.classList.remove('is-visible');
       }
     });
