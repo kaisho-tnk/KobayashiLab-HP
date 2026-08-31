@@ -37,6 +37,10 @@
      ・localStorage に保存し、ページを跨いでも保持する
      ・切り替え時はページを再読み込みして、そのページの表示内容を
        まるごと選択中の言語で描画し直す（部分的な差し替えより確実） */
+  // ページ遷移アイキャッチの表示しきい値。リンククリック（initPageTransitionLinks）と
+  // 言語切り替え（setLang）の両方で共有するため、ここで定義しておく
+  var TRANSITION_SHOW_DELAY = 200; // これより速く遷移が終われば何も表示しない（ms）
+
   var LANG_KEY = 'site_lang';
   function getLang() {
     return window.localStorage && localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'ja';
@@ -44,6 +48,14 @@
   function setLang(lang) {
     if (!window.localStorage) return;
     localStorage.setItem(LANG_KEY, lang);
+    // 言語切り替えもページ全体の再読み込みを伴うため、リンククリック時と同じ
+    // 「時間がかかりそうなときだけスピナーを見せる」挙動に揃える
+    var overlay = document.getElementById('page-transition-overlay');
+    if (overlay) {
+      setTimeout(function () {
+        overlay.classList.add('is-visible');
+      }, TRANSITION_SHOW_DELAY);
+    }
     window.location.reload();
   }
   var LANG = getLang();
@@ -611,10 +623,10 @@
   });
 
   /* ---------- ページ遷移アイキャッチ ----------
-     毎回は出さない。リンクをクリックしてから一定時間（SHOW_DELAY）経っても
+     毎回は出さない。リンクをクリックしてから一定時間（TRANSITION_SHOW_DELAY）経っても
      まだ次のページに切り替わっていない＝読み込みに時間がかかっている、
-     と判断できたときだけスピナーを表示する。速く終われば一切表示しない。 */
-  var SHOW_DELAY = 200; // これより速く遷移が終われば何も表示しない（ms）
+     と判断できたときだけスピナーを表示する。速く終われば一切表示しない。
+     （しきい値は言語切り替えの setLang と共有。ファイル冒頭で定義済み） */
 
   function initPageTransitionLinks() {
     var overlay = document.getElementById('page-transition-overlay');
@@ -636,12 +648,12 @@
       if (url.pathname === window.location.pathname && url.search === window.location.search) return; // 同じページ
 
       e.preventDefault();
-      // 遷移はすぐに開始する。表示だけを SHOW_DELAY だけ遅らせ、
+      // 遷移はすぐに開始する。表示だけを TRANSITION_SHOW_DELAY だけ遅らせ、
       // それより先にページが切り替わってしまえばこのタイマーは意味を持たない
       // （＝速い遷移では一切見えない）。
       setTimeout(function () {
         overlay.classList.add('is-visible');
-      }, SHOW_DELAY);
+      }, TRANSITION_SHOW_DELAY);
       window.location.href = href;
     });
 
