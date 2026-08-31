@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究テーマ1 | 東京大学 〇〇研究室</title>
+    <meta name="description" content="東京大学 〇〇研究室の研究テーマ1の詳細ページです。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/js/theme.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="research" data-theme-id="theme-1">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="../assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
+    <header id="site-header"></header>
+
+    <main class="flex-grow pt-20">
+        <div class="page-header-bg py-14 sm:py-16 text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold text-brand-dark tracking-widest uppercase">Research Theme 1</h1>
+            <p class="text-gray-500 mt-2" data-en="Research Theme 1 Details">研究テーマ1の詳細</p>
+        </div>
+
+        <section class="py-14 sm:py-16">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="mb-6 text-sm text-gray-500" aria-label="パンくずリスト">
+                    <a href="../index.html" class="hover:text-brand-blue">Home</a>
+                    <span class="mx-2">/</span>
+                    <a href="index.html" class="hover:text-brand-blue">Research</a>
+                    <span class="mx-2">/</span>
+                    <span id="theme-breadcrumb-label" class="text-gray-700"></span>
+                </nav>
+
+                <!-- data/research.js（id: 'theme-1'）から自動生成 -->
+                <article id="theme-detail" class="bg-white rounded-xl border border-gray-200 p-6 sm:p-10"></article>
+
+                <div class="mt-10 text-center">
+                    <a href="index.html" class="inline-flex items-center px-6 py-3 border border-brand-blue text-brand-blue font-medium rounded-lg hover:bg-brand-blue hover:text-white transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        <span data-en="Back to Research">Research 一覧へ戻る</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="../data/site.js"></script>
+    <script src="../data/news.js"></script>
+    <script src="../data/research.js"></script>
+    <script src="../assets/js/site.js"></script>
+    <script src="../assets/js/research.js"></script>
+</body>
+</html>

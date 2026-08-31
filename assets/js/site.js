@@ -17,6 +17,68 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // ヘッダー/フッターのナビは data/site.js に「ルート直下から見た相対パス」
+  // （例: 'about.html', 'research/index.html'）で書かれている。
+  // research/ や facilities/ のようにルートより1階層深いページで生成すると、
+  // そのままではリンク切れになるため、現在地に応じて '../' を補う。
+  function pathPrefix() {
+    // ルートより深いフォルダを追加したら、ここにも追記する
+    var nestedFolders = ['research/', 'facilities/'];
+    var path = window.location.pathname;
+    var inNested = nestedFolders.some(function (folder) {
+      return path.indexOf('/' + folder) !== -1;
+    });
+    return inNested ? '../' : '';
+  }
+  var PATH_PREFIX = pathPrefix();
+  window.getPathPrefix = pathPrefix; // research.js / facilities.js など他スクリプトからも参照できるように公開
+
+  /* ---------- 言語切り替え（JP/EN） ----------
+     ・localStorage に保存し、ページを跨いでも保持する
+     ・切り替え時はページを再読み込みして、そのページの表示内容を
+       まるごと選択中の言語で描画し直す（部分的な差し替えより確実） */
+  var LANG_KEY = 'site_lang';
+  function getLang() {
+    return window.localStorage && localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'ja';
+  }
+  function setLang(lang) {
+    if (!window.localStorage) return;
+    localStorage.setItem(LANG_KEY, lang);
+    window.location.reload();
+  }
+  var LANG = getLang();
+  window.getSiteLang = getLang; // members.js / gallery.js など他スクリプトからも参照できるように公開
+
+  // data-en="English text" を持つ要素は、英語表示のときだけ中身を差し替える。
+  // 日本語表示のときは、HTMLに書かれた元の文章（日本語）がそのまま使われる。
+  function applyStaticTranslations() {
+    document.documentElement.lang = LANG;
+    if (LANG !== 'en') return;
+    var nodes = document.querySelectorAll('[data-en]');
+    Array.prototype.forEach.call(nodes, function (el) {
+      var en = el.getAttribute('data-en');
+      if (en) el.textContent = en;
+    });
+  }
+
+  function langSwitcherHtml() {
+    return '<div class="flex items-center gap-1.5 text-xs font-medium" aria-label="言語切り替え / Language">' +
+      '<button type="button" data-lang-btn="ja" class="' + (LANG === 'ja' ? 'text-brand-dark' : 'text-gray-400 hover:text-brand-dark') +
+        ' transition-colors"' + (LANG === 'ja' ? ' aria-current="true"' : '') + '>JP</button>' +
+      '<span class="text-gray-300">/</span>' +
+      '<button type="button" data-lang-btn="en" class="' + (LANG === 'en' ? 'text-brand-dark' : 'text-gray-400 hover:text-brand-dark') +
+        ' transition-colors"' + (LANG === 'en' ? ' aria-current="true"' : '') + '>EN</button>' +
+    '</div>';
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-lang-btn]');
+    if (!btn) return;
+    var lang = btn.getAttribute('data-lang-btn');
+    if (lang === LANG) return;
+    setLang(lang);
+  });
+
   function formatDate(iso) {
     var d = String(iso || '').split('-');
     return d.length === 3 ? d[0] + '.' + d[1] + '.' + d[2] : String(iso || '');
@@ -36,36 +98,125 @@
 
     var pcNav = NAV.map(function (n) {
       var active = n.key === current;
-      return '<a href="' + n.href + '" class="nav-link ' + (active ? 'active text-brand-blue' : 'text-gray-600 hover:text-brand-blue') +
+      return '<a href="' + PATH_PREFIX + n.href + '" class="nav-link ' + (active ? 'active text-brand-blue' : 'text-gray-600 hover:text-brand-blue') +
         ' font-medium transition-colors"' + (active ? ' aria-current="page"' : '') + '>' + esc(n.label) + '</a>';
     }).join('');
 
     var spNav = NAV.map(function (n) {
       var active = n.key === current;
-      return '<a href="' + n.href + '" class="block px-3 py-3 text-base font-medium rounded-md ' +
+      return '<a href="' + PATH_PREFIX + n.href + '" class="block px-3 py-3 text-base font-medium rounded-md ' +
         (active ? 'text-brand-blue bg-blue-50' : 'text-gray-700 hover:text-brand-blue hover:bg-gray-50') + '">' + esc(n.label) + '</a>';
     }).join('');
 
     var header = document.getElementById('site-header');
     if (header) {
-      var headerLabName = esc(SITE.labName || '').replace(/(宇宙飛翔工学研究系)\s+(小林研究室)/, '$1<br class="block">$2');
+      var labNameSource = LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName;
+      var headerLabName = esc(labNameSource || '');
+      if (LANG !== 'en') {
+        // 日本語のラボ名は、画面幅にかかわらず必ずこの2行の形を保つ。
+        // 各行を whitespace-nowrap で囲み、行の途中でさらに折り返らないようにする
+        headerLabName = headerLabName.replace(
+          /(.+宇宙飛翔工学研究系)\s+(小林研究室)/,
+          '<span class="block whitespace-nowrap">$1</span><span class="block whitespace-nowrap">$2</span>'
+        );
+      }
       header.className = 'fixed w-full top-0 z-50 bg-white border-b border-gray-200';
       header.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
-          '<div class="flex justify-between items-center h-20">' +
-            '<a href="index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity">' +
-              '<img src="assets/img/icon.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
-              '<span class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight">' + headerLabName + '</span>' +
+          '<div id="site-header-row" class="flex justify-between items-center h-20">' +
+            '<a href="' + PATH_PREFIX + 'index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity flex-shrink-0">' +
+              '<img src="' + PATH_PREFIX + 'assets/img/icon.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
+              '<span id="header-lab-name" class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight whitespace-nowrap overflow-hidden">' + headerLabName + '</span>' +
             '</a>' +
-            '<nav class="hidden md:flex space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
-            '<button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">' +
-              '<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>' +
-            '</button>' +
+            '<div class="flex items-center gap-4 sm:gap-5 flex-shrink-0">' +
+              '<nav id="pc-nav" class="hidden space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
+              '<div id="header-lang-switcher" class="border-l border-gray-200 pl-4 sm:pl-5">' + langSwitcherHtml() + '</div>' +
+              '<button id="mobile-menu-btn" class="hidden text-gray-600 hover:text-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">' +
+                '<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>' +
+              '</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
-        '<div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">' +
+        '<div id="mobile-menu" class="hidden bg-white border-t border-gray-100">' +
           '<div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">' + spNav + '</div>' +
+          '<div id="mobile-lang-switcher" class="hidden px-5 pb-4 pt-1 border-t border-gray-100">' + langSwitcherHtml() + '</div>' +
         '</div>';
+
+      // ヘッダーの中身（ロゴ＋ラボ名＋ナビ＋言語切替）が実際に1行に収まるかを測り、
+      // 優先順位: ①言語切替・ハンバーガー(できる限り確保) → ②PCナビ(収まらなければハンバーガーへ)
+      // → ③ラボ名の文字(それでも収まらなければ非表示にし、ロゴだけ残す)
+      // → ④それでも収まらなければ、言語切替をハンバーガーメニューの中へ格納する
+      function fitHeaderNav() {
+        var row = document.getElementById('site-header-row');
+        var nav = document.getElementById('pc-nav');
+        var menuBtn = document.getElementById('mobile-menu-btn');
+        var labName = document.getElementById('header-lab-name');
+        var headerLang = document.getElementById('header-lang-switcher');
+        var mobileLang = document.getElementById('mobile-lang-switcher');
+        if (!row || !nav || !menuBtn) return;
+
+        // 一旦どちらも「理想の状態」（ナビ表示・ラボ名表示・言語切替はヘッダー側）にしてから、
+        // 収まらない要素を優先順位の低い順に諦めていく
+        nav.classList.remove('hidden');
+        nav.classList.add('flex');
+        menuBtn.classList.add('hidden');
+        if (labName) labName.classList.remove('hidden');
+        if (headerLang) headerLang.classList.remove('hidden');
+        if (mobileLang) mobileLang.classList.add('hidden');
+
+        if (row.scrollWidth > row.clientWidth + 1) {
+          // まずPCナビをハンバーガーに切り替える
+          nav.classList.add('hidden');
+          nav.classList.remove('flex');
+          menuBtn.classList.remove('hidden');
+
+          // それでも収まらなければ、ラボ名の文字を諦めてロゴだけにする
+          if (labName && row.scrollWidth > row.clientWidth + 1) {
+            labName.classList.add('hidden');
+          }
+
+          // それでもまだ収まらなければ、言語切替をハンバーガーメニューの中へ移す
+          if (headerLang && row.scrollWidth > row.clientWidth + 1) {
+            headerLang.classList.add('hidden');
+            if (mobileLang) mobileLang.classList.remove('hidden');
+          }
+        } else {
+          // 収まる場合は、開いたままのモバイルメニューも念のため閉じておく
+          var mobileMenu = document.getElementById('mobile-menu');
+          if (mobileMenu) mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      // ヘッダーの横幅が変わるたび（Tailwindの遅延スタイル適用・ウィンドウのリサイズ・
+      // フォント読み込み完了による文字幅の変化など、理由を問わず）に自動で再判定する。
+      // ResizeObserver は「サイズが変わったら教えてくれる」ブラウザ標準の仕組みなので、
+      // 「何回・いつまで測り直すか」を自前で管理する必要がなくなる。
+      // 仕様上 observe() 呼び出し直後に必ず1回コールバックが自動発火するため、
+      // ここで手動で fitHeaderNav() を呼ぶ必要はない（呼ぶと初回だけ二重に測ることになる）。
+      var headerRow = document.getElementById('site-header-row');
+      if (headerRow) {
+        if (window.ResizeObserver) {
+          var settling = false;
+          var ro = new ResizeObserver(function () {
+            // fitHeaderNav 自身がクラスを切り替えて発火させる分の再発火は無視する
+            // （無視しないと「表示→はみ出て非表示→縮んで発火→再度表示…」の無限ループになる）
+            if (settling) return;
+            settling = true;
+            fitHeaderNav();
+            requestAnimationFrame(function () { settling = false; });
+          });
+          ro.observe(headerRow); // ここで自動的に初回の判定も走る
+        } else {
+          // ResizeObserver 非対応の古いブラウザ向けの保険
+          fitHeaderNav();
+          var resizeTimer;
+          window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(fitHeaderNav, 100);
+          });
+        }
+      }
 
       var btn = document.getElementById('mobile-menu-btn');
       var menu = document.getElementById('mobile-menu');
@@ -78,11 +229,20 @@
     var footer = document.getElementById('site-footer');
     if (footer) {
       var links = NAV.map(function (n) {
-        return '<a href="' + n.href + '" class="hover:text-white transition-colors">' + esc(n.label) + '</a>';
+        return '<a href="' + PATH_PREFIX + n.href + '" class="hover:text-white transition-colors">' + esc(n.label) + '</a>';
       }).join('');
       var relatedLinks = (SITE.relatedLinks || []).map(function (l) {
-        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" class="inline-flex items-center h-6 rounded overflow-hidden hover:opacity-80 transition-opacity">' +
-          '<img src="' + esc(l.img) + '" alt="' + esc(l.label) + '" class="h-full w-auto object-contain">' +
+        // heightPx: 通常のbox内containを上書きして高さを直接指定（箱からはみ出してもよい）
+        // offsetYPx: 中央基準の位置から縦方向にずらす量（+で下へ）
+        // marginRightPx: 次のロゴとの間隔を個別に広げたいときに指定
+        var extraStyle = '';
+        if (l.heightPx) {
+          extraStyle = ' style="height:' + l.heightPx + 'px !important; max-height:none !important; width:auto !important;' +
+            (l.offsetYPx ? ' transform:translateY(' + l.offsetYPx + 'px);' : '') +
+            (l.marginRightPx ? ' margin-right:' + l.marginRightPx + 'px;' : '') + '"';
+        }
+        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" class="inline-flex items-center justify-center h-7 w-16 hover:opacity-80 transition-opacity">' +
+          '<img src="' + PATH_PREFIX + esc(l.img) + '" alt="' + esc(l.label) + '" class="max-h-full max-w-full object-contain"' + extraStyle + '>' +
         '</a>';
       }).join('');
       var extra = '';
@@ -95,14 +255,14 @@
       footer.className = 'bg-brand-dark text-white py-14 mt-auto';
       footer.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">' +
-          '<p class="text-lg font-semibold mb-2 tracking-wide">' + esc(SITE.labName || '') + '</p>' +
-          '<p class="text-sm text-gray-500 mb-4">' + esc(SITE.affiliation || '') + '</p>' +
+          '<p class="text-lg font-semibold mb-2 tracking-wide">' + esc(LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName) + '</p>' +
+          '<p class="text-sm text-gray-500 mb-4">' + esc(LANG === 'en' ? (SITE.affiliationEn || SITE.affiliation) : SITE.affiliation) + '</p>' +
           (extra ? '<div class="mb-6 space-y-1">' + extra + '</div>' : '') +
           '<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-sm text-gray-500" aria-label="フッターナビゲーション">' +
             links +
           '</nav>' +
           (relatedLinks
-            ? '<nav class="flex flex-wrap justify-center items-center gap-3 mb-8 pt-6 border-t border-white/10" aria-label="関連リンク">' +
+            ? '<nav class="flex flex-wrap justify-center items-center gap-5 mb-8 pt-6 border-t border-white/10" style="transform:translateX(10px);" aria-label="関連リンク">' +
                 relatedLinks +
               '</nav>'
             : '') +
@@ -130,6 +290,15 @@
   }
 
   /* ---------- News ---------- */
+  // item[field] と item[field+'En'] のうち、現在の言語に応じた方を返す
+  function T(item, field) {
+    if (LANG === 'en') {
+      var en = item[field + 'En'];
+      if (en) return en;
+    }
+    return item[field] || '';
+  }
+
   function sortedNews() {
     var items = (window.NEWS_ITEMS || []).slice();
     items.sort(function (a, b) {
@@ -151,15 +320,15 @@
     var meta =
       '<div class="flex items-center gap-3 sm:w-44 flex-shrink-0">' +
         '<time datetime="' + esc(item.date) + '" class="text-gray-500 font-medium text-sm tabular-nums">' + formatDate(item.date) + '</time>' +
-        '<span class="news-badge ' + badgeClass(item.category) + '">' + esc(item.category) + '</span>' +
+        '<span class="news-badge ' + badgeClass(item.category) + '">' + esc(T(item, 'category')) + '</span>' +
       '</div>';
     var title =
       '<div class="min-w-0 flex-1">' +
         '<p class="text-gray-800 font-medium ' + (link ? 'group-hover:text-brand-blue transition-colors' : '') + '">' +
-          esc(item.title) +
-          (link && link.external ? '<span class="ml-1 text-xs text-gray-400">(外部リンク)</span>' : '') +
+          esc(T(item, 'title')) +
+          (link && link.external ? '<span class="ml-1 text-xs text-gray-400">' + (LANG === 'en' ? '(External link)' : '(外部リンク)') + '</span>' : '') +
         '</p>' +
-        (opts && opts.summary && item.summary ? '<p class="text-sm text-gray-500 mt-1">' + esc(item.summary) + '</p>' : '') +
+        (opts && opts.summary && item.summary ? '<p class="text-sm text-gray-500 mt-1">' + esc(T(item, 'summary')) + '</p>' : '') +
       '</div>' +
       (link
         ? '<svg class="hidden sm:block w-4 h-4 flex-shrink-0 text-gray-300 group-hover:text-brand-blue group-hover:translate-x-1 transition-all mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>'
@@ -182,7 +351,7 @@
     var limit = parseInt(el.getAttribute('data-limit') || '3', 10);
     var items = sortedNews().slice(0, limit);
     if (!items.length) {
-      el.innerHTML = '<li class="py-6 text-gray-500">現在お知らせはありません。</li>';
+      el.innerHTML = '<li class="py-6 text-gray-500">' + (LANG === 'en' ? 'There are no news items at this time.' : '現在お知らせはありません。') + '</li>';
       return;
     }
     el.innerHTML = items.map(function (i) { return newsRow(i, { summary: false }); }).join('');
@@ -206,19 +375,25 @@
     function draw() {
       var list = filtered();
       if (!list.length) {
-        el.innerHTML = '<li class="py-8 text-center text-gray-500">該当するお知らせはありません。</li>';
+        el.innerHTML = '<li class="py-8 text-center text-gray-500">' + (LANG === 'en' ? 'No matching news items.' : '該当するお知らせはありません。') + '</li>';
       } else {
         el.innerHTML = list.slice(0, shown).map(function (i) { return newsRow(i, { summary: true }); }).join('');
       }
-      if (countEl) countEl.textContent = list.length + ' 件';
+      if (countEl) countEl.textContent = list.length + (LANG === 'en' ? ' items' : ' 件');
       if (moreWrap) moreWrap.classList.toggle('hidden', list.length <= shown);
     }
 
     if (filterEl) {
       var cats = [];
-      all.forEach(function (i) { if (i.category && cats.indexOf(i.category) === -1) cats.push(i.category); });
+      var catLabels = {}; // カテゴリ(日本語の値) -> 表示ラベル（言語に応じて）
+      all.forEach(function (i) {
+        if (i.category && cats.indexOf(i.category) === -1) {
+          cats.push(i.category);
+          catLabels[i.category] = T(i, 'category');
+        }
+      });
       filterEl.innerHTML = ['all'].concat(cats).map(function (c) {
-        var label = c === 'all' ? 'すべて' : c;
+        var label = c === 'all' ? (LANG === 'en' ? 'All' : 'すべて') : catLabels[c];
         return '<button type="button" data-cat="' + esc(c) + '" class="news-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ' +
           (c === 'all' ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white text-gray-600 border-gray-200 hover:border-brand-blue hover:text-brand-blue') +
           '">' + esc(label) + '</button>';
@@ -251,32 +426,37 @@
     for (var k = 0; k < items.length; k++) { if (items[k].id === id) { idx = k; break; } }
 
     if (idx === -1) {
-      el.innerHTML =
-        '<div class="text-center py-16">' +
-          '<p class="text-2xl font-bold mb-4">記事が見つかりませんでした</p>' +
-          '<p class="text-gray-600 mb-8">URL が正しいかご確認ください。</p>' +
-          '<a href="news.html" class="inline-flex items-center px-6 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-blue-600 transition-colors">News 一覧へ戻る</a>' +
-        '</div>';
+      el.innerHTML = LANG === 'en'
+        ? '<div class="text-center py-16">' +
+            '<p class="text-2xl font-bold mb-4">Article Not Found</p>' +
+            '<p class="text-gray-600 mb-8">Please check that the URL is correct.</p>' +
+            '<a href="news.html" class="inline-flex items-center px-6 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-blue-600 transition-colors">Back to News</a>' +
+          '</div>'
+        : '<div class="text-center py-16">' +
+            '<p class="text-2xl font-bold mb-4">記事が見つかりませんでした</p>' +
+            '<p class="text-gray-600 mb-8">URL が正しいかご確認ください。</p>' +
+            '<a href="news.html" class="inline-flex items-center px-6 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-blue-600 transition-colors">News 一覧へ戻る</a>' +
+          '</div>';
       return;
     }
 
     var item = items[idx];
     var prev = items[idx + 1]; // より古い記事
     var next = items[idx - 1]; // より新しい記事
-    document.title = item.title + ' | ' + (SITE.labName || '');
+    document.title = T(item, 'title') + ' | ' + (LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName || '');
 
     var navHtml = '';
     if (prev || next) {
       navHtml = '<nav class="mt-12 pt-8 border-t border-gray-200 grid gap-4 sm:grid-cols-2" aria-label="前後の記事">' +
         (prev
           ? '<a href="news-detail.html?id=' + encodeURIComponent(prev.id) + '" class="group block p-4 rounded-lg border border-gray-200 hover:border-brand-blue transition-colors">' +
-            '<span class="text-xs text-gray-500">前の記事</span>' +
-            '<p class="font-medium text-gray-800 group-hover:text-brand-blue line-clamp-2">' + esc(prev.title) + '</p></a>'
+            '<span class="text-xs text-gray-500">' + (LANG === 'en' ? 'Previous' : '前の記事') + '</span>' +
+            '<p class="font-medium text-gray-800 group-hover:text-brand-blue line-clamp-2">' + esc(T(prev, 'title')) + '</p></a>'
           : '<span class="hidden sm:block"></span>') +
         (next
           ? '<a href="news-detail.html?id=' + encodeURIComponent(next.id) + '" class="group block p-4 rounded-lg border border-gray-200 hover:border-brand-blue transition-colors sm:text-right">' +
-            '<span class="text-xs text-gray-500">次の記事</span>' +
-            '<p class="font-medium text-gray-800 group-hover:text-brand-blue line-clamp-2">' + esc(next.title) + '</p></a>'
+            '<span class="text-xs text-gray-500">' + (LANG === 'en' ? 'Next' : '次の記事') + '</span>' +
+            '<p class="font-medium text-gray-800 group-hover:text-brand-blue line-clamp-2">' + esc(T(next, 'title')) + '</p></a>'
           : '') +
         '</nav>';
     }
@@ -285,15 +465,15 @@
       '<article class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-10">' +
         '<div class="flex flex-wrap items-center gap-3 mb-4">' +
           '<time datetime="' + esc(item.date) + '" class="text-gray-500 font-medium tabular-nums">' + formatDate(item.date) + '</time>' +
-          '<span class="news-badge ' + badgeClass(item.category) + '">' + esc(item.category) + '</span>' +
+          '<span class="news-badge ' + badgeClass(item.category) + '">' + esc(T(item, 'category')) + '</span>' +
         '</div>' +
-        '<h1 class="text-2xl sm:text-3xl font-bold leading-snug mb-8">' + esc(item.title) + '</h1>' +
-        '<div class="article-body">' + item.body + '</div>' +
+        '<h1 class="text-2xl sm:text-3xl font-bold leading-snug mb-8">' + esc(T(item, 'title')) + '</h1>' +
+        '<div class="article-body">' + T(item, 'body') + '</div>' +
         navHtml +
         '<div class="mt-10 text-center">' +
           '<a href="news.html" class="inline-flex items-center px-6 py-3 border border-brand-blue text-brand-blue font-bold rounded-lg hover:bg-brand-blue hover:text-white transition-colors">' +
             '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>' +
-            'News 一覧へ戻る</a>' +
+            (LANG === 'en' ? 'Back to News' : 'News 一覧へ戻る') + '</a>' +
         '</div>' +
       '</article>';
   }
@@ -406,9 +586,55 @@
     scrollToHashTarget(hash);
   });
 
+  /* ---------- ページ遷移アイキャッチ ----------
+     毎回は出さない。リンクをクリックしてから一定時間（SHOW_DELAY）経っても
+     まだ次のページに切り替わっていない＝読み込みに時間がかかっている、
+     と判断できたときだけスピナーを表示する。速く終われば一切表示しない。 */
+  var SHOW_DELAY = 200; // これより速く遷移が終われば何も表示しない（ms）
+
+  function initPageTransitionLinks() {
+    var overlay = document.getElementById('page-transition-overlay');
+    if (!overlay) return;
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+      var href = a.getAttribute('href');
+      if (!href || href.charAt(0) === '#') return; // 同ページ内アンカーは対象外（別処理に任せる）
+      if (href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) return;
+
+      var url;
+      try { url = new URL(href, window.location.href); } catch (err) { return; }
+      if (url.origin !== window.location.origin) return; // 外部サイトは対象外
+      if (url.pathname === window.location.pathname && url.search === window.location.search) return; // 同じページ
+
+      e.preventDefault();
+      // 遷移はすぐに開始する。表示だけを SHOW_DELAY だけ遅らせ、
+      // それより先にページが切り替わってしまえばこのタイマーは意味を持たない
+      // （＝速い遷移では一切見えない）。
+      setTimeout(function () {
+        overlay.classList.add('is-visible');
+      }, SHOW_DELAY);
+      window.location.href = href;
+    });
+
+    // ブラウザの「戻る/進む」でこのページに復帰したとき（bfcache）、
+    // アイキャッチが表示されたまま固まって見えないようにリセットする
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) {
+        overlay.classList.remove('is-visible');
+      }
+    });
+  }
+
   /* ---------- 初期化 ---------- */
   document.addEventListener('DOMContentLoaded', function () {
     renderChrome();
+    applyStaticTranslations();
+    initPageTransitionLinks();
 
     var preview = document.getElementById('news-preview');
     if (preview) renderNewsPreview(preview);

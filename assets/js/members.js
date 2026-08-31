@@ -13,6 +13,21 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // 現在の表示言語。site.js が window.getSiteLang を公開している前提（無ければ日本語扱い）
+  function lang() {
+    return window.getSiteLang ? window.getSiteLang() : 'ja';
+  }
+
+  // m[field] と m[field+'En'] のうち、現在の言語に応じた方を返す。
+  // 英語版が未入力（空文字・未設定）なら、日本語版にフォールバックする。
+  function T(m, field) {
+    if (lang() === 'en') {
+      var en = m[field + 'En'];
+      if (en) return en;
+    }
+    return m[field] || '';
+  }
+
   /* ---------- status の解釈 ---------- */
   var FACULTY_STATUSES = [
     'Professor', 'Associate Professor', 'Project Associate Professor',
@@ -25,12 +40,19 @@
   var ALUMNI_STATUSES = ['OB', 'OG'];
   // Studentsの並び順の基準（上位学年から）
   var STUDENT_GRADE_ORDER = ['D3', 'D2', 'D1', 'M2', 'M1', 'B4', 'B3', 'B2', 'B1'];
-  var GRADE_LABELS = {
+  var GRADE_LABELS_JA = {
     D1: '博士課程 1年', D2: '博士課程 2年', D3: '博士課程 3年',
     M1: '修士課程 1年', M2: '修士課程 2年',
     B1: '学部 1年', B2: '学部 2年', B3: '学部 3年', B4: '学部 4年'
   };
-  // Faculty/Staff の status は内部的には英語だが、表示は日本語に変換する
+  var GRADE_LABELS_EN = {
+    D1: 'PhD student, 1st year', D2: 'PhD student, 2nd year', D3: 'PhD student, 3rd year',
+    M1: "Master's student, 1st year", M2: "Master's student, 2nd year",
+    B1: 'Undergraduate, 1st year', B2: 'Undergraduate, 2nd year',
+    B3: 'Undergraduate, 3rd year', B4: 'Undergraduate, 4th year'
+  };
+  // Faculty/Staff の status は内部的には英語の値なので、英語表示のときはそのまま使う。
+  // 日本語表示のときだけ、このマップで日本語に変換する。
   var FACULTY_LABELS_JA = {
     'Professor': '教授',
     'Associate Professor': '准教授',
@@ -54,38 +76,53 @@
     return 'student'; // D#/M#/B# など
   }
 
-  // 学生ページ表示用：'D1' → '博士課程 1年'。未登録の略称はそのまま表示する
+  // 学生ページ表示用：'D1' → '博士課程 1年' / "PhD student, 1st year"
   function gradeLabel(status) {
-    return GRADE_LABELS[status] || status;
+    var map = lang() === 'en' ? GRADE_LABELS_EN : GRADE_LABELS_JA;
+    return map[status] || status;
   }
 
-  // Faculty/Staff の役職を日本語表示に変換（Studentsの学年短縮形はそのまま扱う）
-  function statusLabelJa(status) {
+  // Faculty/Staff の役職表示。日本語表示のときだけ日本語に変換し、
+  // 英語表示のときは元々英語の status 値をそのまま使う
+  function statusLabel(status) {
+    if (lang() === 'en') return status;
     var cat = statusCategory(status);
     if (cat === 'faculty') return FACULTY_LABELS_JA[status] || status;
     if (cat === 'staff') return STAFF_LABELS_JA[status] || status;
     return status;
   }
 
-  function roleLines(role) {
+  function roleLines(m) {
+    var role = lang() === 'en' && m.roleEn ? m.roleEn : m.role;
     var arr = Array.isArray(role) ? role : (role ? [role] : []);
     return arr.map(esc).join('<br>');
   }
 
-  var COURSE_LABELS = {
+  var COURSE_LABELS_JA = {
     B: { name: '学部', verb: '卒業' },
     M: { name: '修士課程', verb: '修了' },
     D: { name: '博士課程', verb: '修了' }
   };
+  var COURSE_LABELS_EN = {
+    B: { name: "Bachelor's", verb: 'Graduated' },
+    M: { name: "Master's", verb: 'Completed' },
+    D: { name: 'Doctoral', verb: 'Completed' }
+  };
+  var MONTH_EN = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
 
-  // 'YYYY-MM-X'（X: B/M/D） → 「2027年3月 修士課程修了」のような文字列に変換
+  // 'YYYY-MM-X'（X: B/M/D） → 「2027年3月 修士課程修了」/ "Completed Mar. 2027 (Master's)"
   function formatGraduation(g) {
     var parts = String(g || '').split('-');
     if (parts.length !== 3) return '';
     var y = parseInt(parts[0], 10);
     var m = parseInt(parts[1], 10);
     if (!y || !m) return '';
-    var course = COURSE_LABELS[parts[2]];
+    if (lang() === 'en') {
+      var courseEn = COURSE_LABELS_EN[parts[2]];
+      var monthName = MONTH_EN[m - 1] || m;
+      return (courseEn ? courseEn.verb + ' ' : '') + monthName + ' ' + y + (courseEn ? ' (' + courseEn.name + ')' : '');
+    }
+    var course = COURSE_LABELS_JA[parts[2]];
     var label = course ? course.name : '';
     var verb = course ? course.verb : '修了';
     return y + '年' + m + '月' + (label ? ' ' + label : '') + verb;
@@ -93,21 +130,38 @@
 
   /* ---------- カード生成 ---------- */
 
+  // UIラベル（項目名）の日英対応
+  var UI = {
+    field:   { ja: '専門分野', en: 'Field' },
+    degree:  { ja: '学位',     en: 'Degree' },
+    contact: { ja: '連絡先',   en: 'Contact' },
+    bio:     { ja: '略歴',     en: 'Bio' },
+    comment: { ja: 'ひとこと', en: 'Message' },
+    theme:   { ja: '研究テーマ：', en: 'Research theme: ' },
+    hobby:   { ja: '趣味',     en: 'Hobbies' }
+  };
+  function ui(key) { return UI[key][lang() === 'en' ? 'en' : 'ja']; }
+
   // Faculty（教授・准教授など）：詳しいプロフィールカード
   function facultyCardHtml(m) {
+    var name = T(m, 'name');
+    var field = T(m, 'field');
+    var degree = T(m, 'degree');
+    var bio = T(m, 'bio');
+    var comment = T(m, 'comment');
     return '<div id="' + esc(m.id) + '" class="member-card flex flex-col md:flex-row items-center md:items-start gap-8 bg-brand-light p-6 sm:p-8 rounded-xl border border-gray-200 w-full hover:border-gray-300 transition-colors duration-300">' +
-      '<img src="' + esc(m.photo) + '" alt="' + esc(m.name) + '" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white flex-shrink-0">' +
+      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white flex-shrink-0">' +
       '<div class="text-center md:text-left">' +
-        '<h3 class="text-xl sm:text-2xl font-bold text-brand-dark">' + esc(m.name) + '</h3>' +
-        '<p class="text-brand-blue font-bold mb-4 leading-relaxed">' + roleLines(m.role) + '</p>' +
+        '<h3 class="text-xl sm:text-2xl font-bold text-brand-dark">' + esc(name) + '</h3>' +
+        '<p class="text-brand-blue font-bold mb-4 leading-relaxed">' + roleLines(m) + '</p>' +
         '<dl class="text-gray-600 space-y-1 text-sm sm:text-base">' +
-          (m.field ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">専門分野</dt><dd>' + esc(m.field) + '</dd></div>' : '') +
-          (m.degree ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">学位</dt><dd>' + esc(m.degree) + '</dd></div>' : '') +
-          (m.contact ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">連絡先</dt><dd>' + esc(m.contact) + '</dd></div>' : '') +
+          (field ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">' + esc(ui('field')) + '</dt><dd>' + esc(field) + '</dd></div>' : '') +
+          (degree ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">' + esc(ui('degree')) + '</dt><dd>' + esc(degree) + '</dd></div>' : '') +
+          (m.contact ? '<div class="sm:flex sm:gap-2"><dt class="font-bold text-gray-700 flex-shrink-0">' + esc(ui('contact')) + '</dt><dd>' + esc(m.contact) + '</dd></div>' : '') +
         '</dl>' +
         '<div class="mt-4 space-y-2 text-sm sm:text-base">' +
-          (m.bio ? '<p class="text-gray-600"><span class="font-bold text-gray-700">略歴</span>　' + esc(m.bio) + '</p>' : '') +
-          (m.comment ? '<p class="text-gray-600"><span class="font-bold text-gray-700">ひとこと</span>　' + esc(m.comment) + '</p>' : '') +
+          (bio ? '<p class="text-gray-600"><span class="font-bold text-gray-700">' + esc(ui('bio')) + '</span>　' + esc(bio) + '</p>' : '') +
+          (comment ? '<p class="text-gray-600"><span class="font-bold text-gray-700">' + esc(ui('comment')) + '</span>　' + esc(comment) + '</p>' : '') +
         '</div>' +
       '</div>' +
     '</div>';
@@ -115,36 +169,45 @@
 
   // Students（D1/M1/B4 など）
   function studentCardHtml(m) {
+    var name = T(m, 'name');
+    var theme = T(m, 'theme');
+    var hobby = T(m, 'hobby');
+    var comment = T(m, 'comment');
     return '<li id="' + esc(m.id) + '" class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">' +
-      '<img src="' + esc(m.photo) + '" alt="' + esc(m.name) + '" class="w-24 h-24 rounded-full object-cover border-2 border-white flex-shrink-0">' +
+      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-24 h-24 rounded-full object-cover border-2 border-white flex-shrink-0">' +
       '<div class="text-center sm:text-left">' +
-        '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(m.name) + '</p>' +
+        '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(name) + '</p>' +
         '<p class="text-sm text-brand-blue font-bold">' + esc(gradeLabel(m.status)) + '</p>' +
-        (m.theme ? '<p class="text-sm text-gray-600 mt-2">研究テーマ：' + esc(m.theme) + '</p>' : '') +
-        (m.hobby ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">趣味</span>　' + esc(m.hobby) + '</p>' : '') +
-        (m.comment ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　' + esc(m.comment) + '</p>' : '') +
+        (theme ? '<p class="text-sm text-gray-600 mt-2">' + esc(ui('theme')) + esc(theme) + '</p>' : '') +
+        (hobby ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">' + esc(ui('hobby')) + '</span>　' + esc(hobby) + '</p>' : '') +
+        (comment ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">' + esc(ui('comment')) + '</span>　' + esc(comment) + '</p>' : '') +
       '</div>' +
     '</li>';
   }
 
-  // Staff（TA・ポスドク・秘書 など）：写真なし、職種は日本語で表示
+  // Staff（TA・ポスドク・秘書 など）：写真なし
   function staffMemberCardHtml(m) {
+    var name = T(m, 'name');
+    var comment = T(m, 'comment');
     return '<li id="' + esc(m.id) + '" class="member-card bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">' +
-      '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(m.name) + '</p>' +
-      '<p class="text-sm text-brand-blue font-bold">' + esc(statusLabelJa(m.status)) + '</p>' +
-      (m.comment ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">ひとこと</span>　' + esc(m.comment) + '</p>' : '') +
+      '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(name) + '</p>' +
+      '<p class="text-sm text-brand-blue font-bold">' + esc(statusLabel(m.status)) + '</p>' +
+      (comment ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">' + esc(ui('comment')) + '</span>　' + esc(comment) + '</p>' : '') +
     '</li>';
   }
 
   // Alumni（OB/OG）：卒業(修了)予定年月(graduation) + 補足(note)
   function alumniItemHtml(m) {
+    var name = T(m, 'name');
+    var note = T(m, 'note');
     var grad = formatGraduation(m.graduation);
     var metaParts = [];
     if (grad) metaParts.push(grad);
-    if (m.note) metaParts.push(m.note);
+    if (note) metaParts.push(note);
+    var sep = lang() === 'en' ? ' \u2013 ' : '・';
     return '<div id="' + esc(m.id) + '" class="member-card py-3 sm:flex sm:items-baseline sm:gap-3">' +
-      '<span class="font-bold text-gray-700">' + esc(m.name) + '</span>' +
-      (metaParts.length ? '<span class="text-gray-500 text-sm">' + esc(metaParts.join('・')) + '</span>' : '') +
+      '<span class="font-bold text-gray-700">' + esc(name) + '</span>' +
+      (metaParts.length ? '<span class="text-gray-500 text-sm">' + esc(metaParts.join(sep)) + '</span>' : '') +
     '</div>';
   }
 
@@ -233,14 +296,16 @@
     var all = facultyList.concat(studentList);
     if (!all.length) return;
     el.innerHTML = all.map(function (m) {
-      var roleArr = Array.isArray(m.role) ? m.role : (m.role ? [m.role] : []);
-      var titleSuffix = roleArr.length ? roleArr.join(' / ') : (statusCategory(m.status) === 'student' ? gradeLabel(m.status) : statusLabelJa(m.status));
-      var shortLabel = statusCategory(m.status) === 'student' ? m.status : statusLabelJa(m.status);
-      return '<a href="members.html#' + esc(m.id) + '" class="group flex flex-col items-center gap-2 w-16 flex-shrink-0" title="' + esc(m.name) + '（' + esc(titleSuffix) + '）">' +
+      var name = T(m, 'name');
+      var roleArr = lang() === 'en' && m.roleEn ? m.roleEn : (m.role || []);
+      roleArr = Array.isArray(roleArr) ? roleArr : (roleArr ? [roleArr] : []);
+      var titleSuffix = roleArr.length ? roleArr.join(' / ') : (statusCategory(m.status) === 'student' ? gradeLabel(m.status) : statusLabel(m.status));
+      var shortLabel = statusCategory(m.status) === 'student' ? m.status : statusLabel(m.status);
+      return '<a href="members.html#' + esc(m.id) + '" class="group flex flex-col items-center gap-2 w-16 flex-shrink-0" title="' + esc(name) + '（' + esc(titleSuffix) + '）">' +
         '<span class="block w-14 h-14 rounded-full overflow-hidden border border-gray-200 group-hover:border-gray-300 transition-colors">' +
-          '<img src="' + esc(m.photo) + '" alt="' + esc(m.name) + '" class="w-full h-full object-cover">' +
+          '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-full h-full object-cover">' +
         '</span>' +
-        '<span class="text-[11px] text-gray-500 text-center leading-tight">' + esc(shortLabel) + '<br>' + esc(m.name) + '</span>' +
+        '<span class="text-[11px] text-gray-500 text-center leading-tight">' + esc(shortLabel) + '<br>' + esc(name) + '</span>' +
       '</a>';
     }).join('');
   }

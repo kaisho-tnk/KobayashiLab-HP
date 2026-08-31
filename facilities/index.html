@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities | 東京大学 〇〇研究室</title>
+    <meta name="description" content="東京大学 〇〇研究室の活動拠点（JAXA相模原キャンパス・能代ロケット実験場・あきる野実験施設）のご案内。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/js/theme.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="facilities">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="../assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
+
+    <header id="site-header"></header>
+
+    <main class="flex-grow pt-20">
+        <div class="page-header-bg py-14 sm:py-16 text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold text-brand-dark tracking-widest uppercase">Facilities</h1>
+            <p class="text-gray-500 mt-2" data-en="Our Research Facilities">活動拠点</p>
+        </div>
+
+        <section class="section-padding">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="fade-up text-center max-w-3xl mx-auto text-base sm:text-lg text-gray-600 mb-14" data-en="Our laboratory is based at the Institute of Space and Astronautical Science (ISAS), JAXA, conducting theoretical and design research at the Sagamihara Campus, as well as combustion and flight experiments at the Akiruno Experimental Facility and the Noshiro Rocket Testing Center.">
+                    当研究室はJAXA宇宙科学研究所に所属し、相模原キャンパスでの理論・設計研究に加え、あきる野実験施設・能代ロケット実験場での燃焼実験・飛行実験を軸に活動しています。
+                </p>
+
+                <!-- Facilities（data/facilities.js から自動生成） -->
+                <div id="facilities-list" class="fade-up grid sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="../data/site.js"></script>
+    <script src="../data/news.js"></script>
+    <script src="../data/facilities.js"></script>
+    <script src="../assets/js/site.js"></script>
+    <script src="../assets/js/facilities.js"></script>
+</body>
+</html>

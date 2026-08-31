@@ -13,22 +13,24 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="about">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
 
     <header id="site-header"></header>
 
     <main class="flex-grow pt-20">
         <div class="page-header-bg py-14 sm:py-16 text-center">
             <h1 class="text-3xl sm:text-4xl font-bold text-brand-dark tracking-widest uppercase">About Us</h1>
-            <p class="text-gray-500 mt-2">研究室紹介</p>
+            <p class="text-gray-500 mt-2" data-en="Laboratory Introduction">研究室紹介</p>
         </div>
 
         <!-- メッセージ -->
         <section class="section-padding">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="fade-up text-lg sm:text-xl text-brand-dark font-bold mb-6 leading-relaxed">
+                <p class="fade-up text-lg sm:text-xl text-brand-dark font-bold mb-6 leading-relaxed" data-en="Research on XX, driven by both experiment and theory.">
                     〇〇の研究を、実験と理論の両輪で。
                 </p>
-                <p class="fade-up text-gray-600 leading-loose" style="transition-delay: 100ms;">
+                <p class="fade-up text-gray-600 leading-loose" style="transition-delay: 100ms;" data-en="Our laboratory conducts research on XX not only through theoretical study at our desks, but consistently through to real hardware testing at facilities such as the Noshiro Rocket Testing Center. We welcome those who want to advance their research while being part of the real &#39;build it, fly it, verify it&#39; process.">
                     当研究室では、〇〇に関する研究を、机上での理論検討だけでなく、能代ロケット実験場をはじめとする実験場での実機試験まで一貫して行っています。
                     「作って、飛ばして、確かめる」というリアルな現場に立ち会いながら研究を進めたい方を歓迎します。
                 </p>
@@ -38,8 +40,8 @@
         <!-- 目指すところ -->
         <section class="section-padding bg-white border-t border-gray-100">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="section-title fade-up">目指すところ</h2>
-                <p class="fade-up text-gray-600 leading-loose">
+                <h2 class="section-title fade-up" data-en="Our Vision">目指すところ</h2>
+                <p class="fade-up text-gray-600 leading-loose" data-en="Our goal is a fully reusable, hydrogen-fueled rocket. We are developing air-breathing engines that use atmospheric oxygen until the vehicle leaves the atmosphere. Guided by a long-term vision of XX, we value a structure that allows us to work seamlessly from basic research through to full-scale demonstration.">
                     目指すのは水素燃料の完全再使用ロケットです。宇宙空間に出るまでは大気中の酸素を利用しようという、
                     エアブリーザー型エンジンの開発に取り組んでいます。〇〇という長期的なビジョンのもと、
                     基礎研究から実機実証まで一気通貫で取り組める体制を大切にしています。
@@ -50,23 +52,23 @@
         <!-- 研究環境の魅力 -->
         <section class="section-padding">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title fade-up">ここには充実した研究環境があります</h2>
+                <h2 class="section-title fade-up" data-en="Here, You&#39;ll Find a Rich Research Environment">ここには充実した研究環境があります</h2>
                 <div class="grid sm:grid-cols-2 gap-6">
                     <div class="fade-up bg-white rounded-xl border border-gray-100 p-6">
-                        <p class="font-bold text-brand-dark mb-2">JAXAの宇宙科学プロジェクトに直接関わる研究</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">宇宙科学研究所（ISAS）には理学・工学のさまざまな分野の専門家がいるため、総合的な視野で研究を行うことができます。</p>
+                        <p class="font-bold text-brand-dark mb-2" data-en="Research directly involved in JAXA space science projects">JAXAの宇宙科学プロジェクトに直接関わる研究</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-en="ISAS brings together experts from a wide range of scientific and engineering fields, allowing you to conduct research with a comprehensive perspective.">宇宙科学研究所（ISAS）には理学・工学のさまざまな分野の専門家がいるため、総合的な視野で研究を行うことができます。</p>
                     </div>
                     <div class="fade-up bg-white rounded-xl border border-gray-100 p-6" style="transition-delay: 50ms;">
-                        <p class="font-bold text-brand-dark mb-2">最新の計算機・解析環境</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">JAXAのスーパーコンピュータや、最新の数値流体力学（CFD）ソフトウェア・設計探査ソフトウェアを利用することができます。</p>
+                        <p class="font-bold text-brand-dark mb-2" data-en="State-of-the-art computing and analysis environment">最新の計算機・解析環境</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-en="You can use JAXA&#39;s supercomputer as well as the latest computational fluid dynamics (CFD) software and design exploration software.">JAXAのスーパーコンピュータや、最新の数値流体力学（CFD）ソフトウェア・設計探査ソフトウェアを利用することができます。</p>
                     </div>
                     <div class="fade-up bg-white rounded-xl border border-gray-100 p-6" style="transition-delay: 100ms;">
-                        <p class="font-bold text-brand-dark mb-2">実機を使った実験環境</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">能代ロケット実験場・あきる野実験施設をはじめ、JAXA相模原キャンパスの各種試験設備を利用した実機試験を行うことができます。</p>
+                        <p class="font-bold text-brand-dark mb-2" data-en="Hands-on experimental facilities">実機を使った実験環境</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-en="You can conduct hardware testing using facilities including the Noshiro Rocket Testing Center, the Akiruno Experimental Facility, and various test equipment at JAXA&#39;s Sagamihara Campus.">能代ロケット実験場・あきる野実験施設をはじめ、JAXA相模原キャンパスの各種試験設備を利用した実機試験を行うことができます。</p>
                     </div>
                     <div class="fade-up bg-white rounded-xl border border-gray-100 p-6" style="transition-delay: 150ms;">
-                        <p class="font-bold text-brand-dark mb-2">国内外の学会で発表する機会</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">研究成果が出せれば、年に1〜2回程度、国内会議・国際会議で発表する機会があります。</p>
+                        <p class="font-bold text-brand-dark mb-2" data-en="Opportunities to present at conferences worldwide">国内外の学会で発表する機会</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-en="Once you produce research results, you&#39;ll have the opportunity to present at domestic and international conferences roughly one to two times a year.">研究成果が出せれば、年に1〜2回程度、国内会議・国際会議で発表する機会があります。</p>
                     </div>
                 </div>
             </div>
@@ -75,31 +77,31 @@
         <!-- 沿革 -->
         <section class="section-padding bg-white border-t border-gray-100">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title fade-up">沿革</h2>
+                <h2 class="section-title fade-up" data-en="History">沿革</h2>
                 <ol class="fade-up space-y-0">
                     <li class="flex gap-6 pb-8 border-l-2 border-gray-200 pl-6 -ml-px relative">
                         <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-brand-blue"></span>
                         <div>
-                            <p class="text-sm font-bold text-brand-blue mb-1">2022年</p>
-                            <p class="text-gray-600 text-sm">小林弘明が宇宙科学研究所 教授に着任、研究室を開設。</p>
+                            <p class="text-sm font-bold text-brand-blue mb-1" data-en="2022">2022年</p>
+                            <p class="text-gray-600 text-sm" data-en="Hiroaki Kobayashi joined ISAS as Professor and established the laboratory.">小林弘明が宇宙科学研究所 教授に着任、研究室を開設。</p>
                         </div>
                     </li>
                     <li class="flex gap-6 pb-8 border-l-2 border-gray-200 pl-6 -ml-px relative">
                         <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-brand-blue"></span>
                         <div>
-                            <p class="text-sm font-bold text-brand-blue mb-1">2024年</p>
-                            <p class="text-gray-600 text-sm">東京大学大学院工学系研究科航空宇宙工学専攻 教授を兼任。</p>
+                            <p class="text-sm font-bold text-brand-blue mb-1" data-en="2024">2024年</p>
+                            <p class="text-gray-600 text-sm" data-en="Began a joint appointment as Professor, Department of Aeronautics and Astronautics, The University of Tokyo.">東京大学大学院工学系研究科航空宇宙工学専攻 教授を兼任。</p>
                         </div>
                     </li>
                     <li class="flex gap-6 pl-6 -ml-px relative">
                         <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-brand-blue"></span>
                         <div>
-                            <p class="text-sm font-bold text-brand-blue mb-1">2025年</p>
-                            <p class="text-gray-600 text-sm">クランフィールド大学 客員教授を兼任。</p>
+                            <p class="text-sm font-bold text-brand-blue mb-1" data-en="2025">2025年</p>
+                            <p class="text-gray-600 text-sm" data-en="Began a joint appointment as Visiting Professor, Cranfield University.">クランフィールド大学 客員教授を兼任。</p>
                         </div>
                     </li>
                 </ol>
-                <p class="fade-up text-xs text-gray-400 mt-6">※ 沿革は随時更新予定です。</p>
+                <p class="fade-up text-xs text-gray-400 mt-6" data-en="* This history will be updated from time to time.">※ 沿革は随時更新予定です。</p>
             </div>
         </section>
     </main>

@@ -446,3 +446,54 @@ h1, h2, h3, p, li {
   padding-left: 1rem;
   color: #475569;
 }
+
+/* --- ページ遷移アイキャッチ ---
+   Tailwind CDN のクラスには依存しないプレーンCSS。
+   <link rel="stylesheet"> は描画をブロックして読み込まれるため、
+   ページの初期表示（最初のペイント）から確実に効く。 */
+#page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#page-transition-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+#page-transition-overlay .spinner-wrap {
+  position: relative;
+  width: clamp(180px, 32vw, 460px);
+  height: clamp(180px, 32vw, 460px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#page-transition-overlay img {
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+#page-transition-overlay .spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #a2a3a7;
+  animation: pageTransitionSpin 1.4s linear infinite;
+}
+@keyframes pageTransitionSpin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #page-transition-overlay .spinner-ring { animation: none; }
+  #page-transition-overlay { transition: none; }
+}

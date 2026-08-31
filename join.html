@@ -13,24 +13,26 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="join">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
 
     <header id="site-header"></header>
 
     <main class="flex-grow pt-20">
         <div class="page-header-bg py-14 sm:py-16 text-center">
             <h1 class="text-3xl sm:text-4xl font-bold text-brand-dark tracking-widest uppercase">Join Us</h1>
-            <p class="text-gray-500 mt-2">配属希望の方へ</p>
+            <p class="text-gray-500 mt-2" data-en="For Prospective Students &amp; Researchers">配属希望の方へ</p>
         </div>
 
         <!-- メッセージ -->
         <section class="section-padding">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="fade-up text-lg sm:text-xl text-brand-dark font-bold mb-6 leading-relaxed">
+                <p class="fade-up text-lg sm:text-xl text-brand-dark font-bold mb-6 leading-relaxed" data-en="To Those Who Wish to Join the Kobayashi Laboratory as a Student or Postdoc">
                     学生・ポスドクとして小林研究室配属を希望する皆様へ
                 </p>
                 <p class="fade-up text-gray-600 leading-loose" style="transition-delay: 100ms;">
-                    研究室の雰囲気や研究環境については<a href="about.html" class="text-brand-blue underline hover:text-blue-700">About Us</a>のページもご覧ください。
-                    以下では、学生・ポスドクそれぞれの具体的な参画方法をご案内します。
+                    <span data-en="For more on the lab&#39;s atmosphere and research environment, please also see the ">研究室の雰囲気や研究環境については</span><a href="about.html" class="text-brand-blue underline hover:text-blue-700">About Us</a><span data-en=" page. Below, we explain the specific ways to join as a student or as a postdoc.">のページもご覧ください。
+                    以下では、学生・ポスドクそれぞれの具体的な参画方法をご案内します。</span>
                 </p>
             </div>
         </section>
@@ -38,28 +40,28 @@
         <!-- 学生として加わるには -->
         <section class="section-padding bg-white border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title fade-up">学生として研究室で研究するためには</h2>
-                <p class="fade-up text-gray-600 text-center mb-10 -mt-6">主に、以下の3つの方法があります。</p>
+                <h2 class="section-title fade-up" data-en="How to Join as a Student">学生として研究室で研究するためには</h2>
+                <p class="fade-up text-gray-600 text-center mb-10 -mt-6" data-en="There are mainly three ways to do so.">主に、以下の3つの方法があります。</p>
                 <ol class="space-y-6">
                     <li class="fade-up flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-5 sm:p-6">
                         <span class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center">1</span>
                         <div>
-                            <p class="font-bold text-brand-dark mb-1">東京大学大学院に入学する</p>
-                            <p class="text-gray-600 text-sm">東京大学大学院工学系研究科航空宇宙工学専攻の修士課程・博士課程に入学し、配属先として当研究室を希望してください。</p>
+                            <p class="font-bold text-brand-dark mb-1" data-en="Enroll in a Graduate Program at The University of Tokyo">東京大学大学院に入学する</p>
+                            <p class="text-gray-600 text-sm" data-en="Enroll in the Master&#39;s or Doctoral program of the Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo, and request our laboratory as your assigned lab.">東京大学大学院工学系研究科航空宇宙工学専攻の修士課程・博士課程に入学し、配属先として当研究室を希望してください。</p>
                         </div>
                     </li>
                     <li class="fade-up flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-5 sm:p-6" style="transition-delay: 100ms;">
                         <span class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center">2</span>
                         <div>
-                            <p class="font-bold text-brand-dark mb-1">受託指導学生・技術習得実習生になる</p>
-                            <p class="text-gray-600 text-sm">他大学に在籍のまま、宇宙科学研究所の受託指導学生・技術習得実習生として研究を行うこともできます（所属大学の担当教員の許可が必要です）。</p>
+                            <p class="font-bold text-brand-dark mb-1" data-en="Become a Contracted Guidance Student or Technical Trainee">受託指導学生・技術習得実習生になる</p>
+                            <p class="text-gray-600 text-sm" data-en="While remaining enrolled at another university, you can also conduct research at ISAS as a contracted guidance student or technical trainee (permission from your home institution&#39;s supervising faculty is required).">他大学に在籍のまま、宇宙科学研究所の受託指導学生・技術習得実習生として研究を行うこともできます（所属大学の担当教員の許可が必要です）。</p>
                         </div>
                     </li>
                     <li class="fade-up flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-5 sm:p-6" style="transition-delay: 200ms;">
                         <span class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center">3</span>
                         <div>
-                            <p class="font-bold text-brand-dark mb-1">JAXAの連携大学院に入学する</p>
-                            <p class="text-gray-600 text-sm">JAXAの連携大学院制度を利用して入学し、JAXAでの研究指導を希望してください。年度はじめにかかわらず随時受け付けています。</p>
+                            <p class="font-bold text-brand-dark mb-1" data-en="Enroll Through a JAXA Cooperative Graduate School">JAXAの連携大学院に入学する</p>
+                            <p class="text-gray-600 text-sm" data-en="Enroll through JAXA&#39;s cooperative graduate school program and request research supervision at JAXA. Applications are accepted at any time, not only at the start of the academic year.">JAXAの連携大学院制度を利用して入学し、JAXAでの研究指導を希望してください。年度はじめにかかわらず随時受け付けています。</p>
                         </div>
                     </li>
                 </ol>
@@ -69,21 +71,25 @@
         <!-- ポスドクとして加わるには -->
         <section class="section-padding bg-brand-light border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title fade-up">ポスドクとして研究室で研究するためには</h2>
-                <p class="fade-up text-gray-600 text-center mb-10 -mt-6">主に、以下の2つの方法があります。</p>
+                <h2 class="section-title fade-up" data-en="How to Join as a Postdoc">ポスドクとして研究室で研究するためには</h2>
+                <p class="fade-up text-gray-600 text-center mb-10 -mt-6" data-en="There are mainly two ways to do so.">主に、以下の2つの方法があります。</p>
                 <ol class="space-y-6">
                     <li class="fade-up flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-5 sm:p-6">
                         <span class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center">1</span>
                         <div>
-                            <p class="font-bold text-brand-dark mb-1">JAXA任期付きプロジェクト研究員になる</p>
-                            <p class="text-gray-600 text-sm">JAXAのポスドク制度です。応募締め切りは例年9月前後です。詳細は<a href="https://www.jaxa.jp/about/employ/project_staff_isas_j.html" target="_blank" rel="noopener" class="text-brand-blue underline hover:text-blue-700">JAXA公式サイト</a>をご確認ください。</p>
+                            <p class="font-bold text-brand-dark mb-1" data-en="Become a JAXA Fixed-Term Project Researcher">JAXA任期付きプロジェクト研究員になる</p>
+                            <p class="text-gray-600 text-sm">
+                                <span data-en="JAXA&#39;s postdoctoral program. The application deadline is typically around September each year. For details, please see the ">JAXAのポスドク制度です。応募締め切りは例年9月前後です。詳細は</span><a href="https://www.jaxa.jp/about/employ/project_staff_isas_j.html" target="_blank" rel="noopener" class="text-brand-blue underline hover:text-blue-700"><span data-en="official JAXA website">JAXA公式サイト</span></a><span data-en=".">をご確認ください。</span>
+                            </p>
                         </div>
                     </li>
                     <li class="fade-up flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-5 sm:p-6" style="transition-delay: 100ms;">
                         <span class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center">2</span>
                         <div>
-                            <p class="font-bold text-brand-dark mb-1">日本学術振興会 特別研究員（PD）になる</p>
-                            <p class="text-gray-600 text-sm">申請の受付は例年6月です。詳細は<a href="https://www.jsps.go.jp/j-pd/" target="_blank" rel="noopener" class="text-brand-blue underline hover:text-blue-700">日本学術振興会のウェブサイト</a>をご確認ください。</p>
+                            <p class="font-bold text-brand-dark mb-1" data-en="Become a JSPS Research Fellow (PD)">日本学術振興会 特別研究員（PD）になる</p>
+                            <p class="text-gray-600 text-sm">
+                                <span data-en="Applications are typically accepted in June each year. For details, please see the ">申請の受付は例年6月です。詳細は</span><a href="https://www.jsps.go.jp/j-pd/" target="_blank" rel="noopener" class="text-brand-blue underline hover:text-blue-700"><span data-en="JSPS website">日本学術振興会のウェブサイト</span></a><span data-en=".">をご確認ください。</span>
+                            </p>
                         </div>
                     </li>
                 </ol>
@@ -93,12 +99,12 @@
         <!-- お問い合わせ -->
         <section class="section-padding">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="fade-up text-2xl sm:text-3xl font-bold text-brand-dark mb-4">お問い合わせ</h2>
-                <p class="fade-up text-gray-600 mb-8" style="transition-delay: 100ms;">
+                <h2 class="fade-up text-2xl sm:text-3xl font-bold text-brand-dark mb-4" data-en="Contact">お問い合わせ</h2>
+                <p class="fade-up text-gray-600 mb-8" style="transition-delay: 100ms;" data-en="Lab visits and inquiries are always welcome. Whether you are interested in joining as a student or as a postdoc, please feel free to contact us.">
                     研究室見学・相談はいつでも歓迎です。学生・ポスドクいずれの立場でご興味のある方も、まずはお気軽にご連絡ください。
                 </p>
                 <a href="mailto:info@example.u-tokyo.ac.jp" class="fade-up inline-flex items-center px-8 py-3.5 bg-brand-yellow text-brand-dark font-medium rounded-full hover:brightness-95 transition-all duration-300" style="transition-delay: 200ms;">
-                    メールで問い合わせる
+                    <span data-en="Contact Us by Email">メールで問い合わせる</span>
                 </a>
             </div>
         </section>

@@ -18,6 +18,8 @@
     </style>
 </head>
 <body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="home">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
 
     <header id="site-header"></header>
 
@@ -42,20 +44,48 @@
                     RESEARCH LABORATORY
                 </span>
                 <h1 class="hero-animate delay-100 text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-4 leading-snug">
-                    <a href="about.html" class="hover:opacity-80 transition-opacity">世界を変える、次世代の研究拠点へ</a>
+                    <a href="about.html" class="hover:opacity-80 transition-opacity" data-en="Toward a research base that changes the world">世界を変える、次世代の研究拠点へ</a>
                 </h1>
-                <p class="hero-animate delay-200 text-sm sm:text-base text-gray-300 mb-8 max-w-xl">
+                <p class="hero-animate delay-200 text-sm sm:text-base text-gray-300 mb-8 max-w-xl" data-en="From fundamental research to real-world application, we take on challenges across disciplines, creating knowledge that contributes to society.">
                     基礎から応用まで、分野の垣根を超えた挑戦を続けています。知の創造を通じて、社会に貢献する技術を育みます。
                 </p>
                 <div class="hero-animate delay-300 flex flex-wrap gap-3">
-                    <a href="#section-research" class="px-6 py-2.5 bg-white text-brand-dark font-medium rounded-full hover:bg-gray-100 transition-colors duration-300 text-sm">研究テーマを見る</a>
-                    <a href="#section-facilities" class="px-6 py-2.5 border border-white/40 text-white font-medium rounded-full hover:bg-white/10 transition-colors duration-300 text-sm">研究拠点を見る</a>
+                    <a href="#section-research" class="px-6 py-2.5 bg-white text-brand-dark font-medium rounded-full hover:bg-gray-100 transition-colors duration-300 text-sm" data-en="View Research">研究テーマを見る</a>
+                    <a href="#section-facilities" class="px-6 py-2.5 border border-white/40 text-white font-medium rounded-full hover:bg-white/10 transition-colors duration-300 text-sm" data-en="View Facilities">研究拠点を見る</a>
                 </div>
             </div>
         </section>
 
+        <!-- Research（研究テーマの3枚プレビュー） -->
+        <section id="section-research" data-scroll-gap="0" class="py-14 sm:py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Research</h2>
+                    <a href="research/index.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div id="research-preview" class="fade-up grid sm:grid-cols-3 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- Facilities（Researchセクションと同様の3枚プレビュー） -->
+        <section id="section-facilities" data-scroll-gap="0" class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Facilities</h2>
+                    <a href="facilities/index.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
+                        すべて見る
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div id="facilities-preview" class="fade-up grid sm:grid-cols-3 gap-4"></div>
+            </div>
+        </section>
+
         <!-- Recent News（data/news.js から自動生成） -->
-        <section class="py-14 sm:py-16 bg-brand-light">
+        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">News</h2>
@@ -70,74 +100,8 @@
             </div>
         </section>
 
-        <!-- Research（研究テーマの3枚プレビュー） -->
-        <section id="section-research" data-scroll-gap="0" class="py-14 sm:py-16 bg-white border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Research</h2>
-                    <a href="research.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
-                        すべて見る
-                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-4">
-                    <a href="research-theme1.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5M19.8 15.3l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 20.25a48.25 48.25 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ1</p>
-                        <p class="text-xs text-gray-500">一言説明が入ります</p>
-                    </a>
-                    <a href="research-theme2.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 50ms;">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ2</p>
-                        <p class="text-xs text-gray-500">一言説明が入ります</p>
-                    </a>
-                    <a href="research-theme3.html" class="fade-up bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 100ms;">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.98 0 13.788M12 12h.008v.008H12V12z"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">研究テーマ3</p>
-                        <p class="text-xs text-gray-500">一言説明が入ります</p>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Facilities（Researchセクションと同様の3枚プレビュー） -->
-        <section id="section-facilities" data-scroll-gap="0" class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Facilities</h2>
-                    <a href="facilities.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
-                        すべて見る
-                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-4">
-                    <a href="facilities.html#location-1" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">JAXA相模原キャンパス</p>
-                        <p class="text-xs text-gray-500">メインキャンパス・大型風洞設備<br>基礎開発・要素試験</p>
-                        <p class="text-xs text-gray-400 mt-1">〒252-5210</p>
-                        <p class="text-xs text-gray-400">神奈川県相模原市中央区由野台3-1-1</p>
-                    </a>
-                    <a href="facilities.html#location-2" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 50ms;">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">あきる野実験施設</p>
-                        <p class="text-xs text-gray-500">耐火耐爆実験室・水素酸素ガス供給設備<br>化学反応を伴う推進系基礎試験</p>
-                        <p class="text-xs text-gray-400 mt-1">〒197-0801</p>
-                        <p class="text-xs text-gray-400">東京都あきる野市菅生1918-1</p>
-                    </a>
-                    <a href="facilities.html#location-3" class="fade-up bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors" style="transition-delay: 100ms;">
-                        <svg class="w-5 h-5 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
-                        <p class="text-sm font-semibold text-brand-dark mb-1">能代ロケット実験場</p>
-                        <p class="text-xs text-gray-500">耐火耐爆ピット・液化水素供給設備<br>エンジン地上燃焼・離着陸試験</p>
-                        <p class="text-xs text-gray-400 mt-1">〒016-0179</p>
-                        <p class="text-xs text-gray-400">秋田県能代市浅内字下西山1</p>
-                    </a>
-                </div>
-            </div>
-        </section>
-
         <!-- Members（メンバープレビュー） -->
-        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
+        <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Members</h2>
@@ -154,7 +118,7 @@
             </div>
         </section>
         <!-- Gallery（最新3枚のミニマルなサムネイル） -->
-        <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
+        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Gallery</h2>
@@ -168,7 +132,7 @@
         </section>
 
         <!-- 配属を検討している方へのCTA -->
-        <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
+        <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <a href="join.html" class="fade-up group inline-flex items-center px-6 py-3 bg-brand-dark text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-300">
                     配属を検討している方はこちら
@@ -184,9 +148,13 @@
     <script src="data/news.js"></script>
     <script src="data/gallery.js"></script>
     <script src="data/members.js"></script>
+    <script src="data/research.js"></script>
+    <script src="data/facilities.js"></script>
     <script src="assets/js/site.js"></script>
     <script src="assets/js/gallery.js"></script>
     <script src="assets/js/members.js"></script>
+    <script src="assets/js/research.js"></script>
+    <script src="assets/js/facilities.js"></script>
     <script>
         // ヒーロー画像のズーム開始
         window.addEventListener('load', function () {

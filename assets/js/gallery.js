@@ -19,6 +19,17 @@
     return d.length === 3 ? d[0] + '.' + d[1] + '.' + d[2] : String(iso || '');
   }
 
+  function lang() { return window.getSiteLang ? window.getSiteLang() : 'ja'; }
+
+  // post[field] と post[field+'En'] のうち、現在の言語に応じた方を返す
+  function T(post, field) {
+    if (lang() === 'en') {
+      var en = post[field + 'En'];
+      if (en) return en;
+    }
+    return post[field] || '';
+  }
+
   // 画像トラックを生成（先頭/末尾にループ用のクローンを仕込む）。
   // グリッドのサムネイルにも、拡大ポップアップにも同じものを使う。
   function buildTrack(images, altText) {
@@ -57,7 +68,7 @@
     el.className = 'gallery-post';
     el.id = post.id;
 
-    var track = buildTrack(post.images, post.title);
+    var track = buildTrack(post.images, T(post, 'title'));
     el.appendChild(track);
 
     // 複数枚アイコン（Instagramの「重なった正方形」アイコン相当）
@@ -75,8 +86,8 @@
     var overlay = document.createElement('div');
     overlay.className = 'gallery-overlay';
     overlay.innerHTML =
-      '<p class="gallery-overlay-title">' + esc(post.title || '') + '</p>' +
-      (post.caption ? '<p class="gallery-overlay-caption">' + esc(post.caption) + '</p>' : '');
+      '<p class="gallery-overlay-title">' + esc(T(post, 'title')) + '</p>' +
+      (post.caption ? '<p class="gallery-overlay-caption">' + esc(T(post, 'caption')) + '</p>' : '');
     el.appendChild(overlay);
 
     // ドット（複数枚のときだけ）
@@ -237,14 +248,14 @@
     overlay.className = 'gallery-modal-overlay';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', post.title || '写真の拡大表示');
+    overlay.setAttribute('aria-label', T(post, 'title') || (lang() === 'en' ? 'Enlarged photo view' : '写真の拡大表示'));
 
     var modal = document.createElement('div');
     modal.className = 'gallery-modal';
 
     var viewport = document.createElement('div');
     viewport.className = 'gallery-modal-viewport';
-    var track = buildTrack(post.images, post.title);
+    var track = buildTrack(post.images, T(post, 'title'));
     viewport.appendChild(track);
     var dotsWrap = buildDots(post.images);
     if (dotsWrap) viewport.appendChild(dotsWrap);
@@ -252,17 +263,17 @@
 
     var info = document.createElement('div');
     info.className = 'gallery-modal-info';
-    var bodyText = post.body || post.caption || '';
+    var bodyText = T(post, 'body') || T(post, 'caption') || '';
     info.innerHTML =
       (post.date ? '<time class="gallery-modal-date">' + esc(formatDate(post.date)) + '</time>' : '') +
-      '<h3 class="gallery-modal-title">' + esc(post.title || '') + '</h3>' +
+      '<h3 class="gallery-modal-title">' + esc(T(post, 'title')) + '</h3>' +
       (bodyText ? '<p class="gallery-modal-body">' + esc(bodyText) + '</p>' : '');
     modal.appendChild(info);
 
     var closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'gallery-modal-close';
-    closeBtn.setAttribute('aria-label', '閉じる');
+    closeBtn.setAttribute('aria-label', lang() === 'en' ? 'Close' : '閉じる');
     closeBtn.innerHTML = '&times;';
     modal.appendChild(closeBtn);
 
