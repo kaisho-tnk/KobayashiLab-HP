@@ -154,8 +154,14 @@ h1, h2, h3, p, li {
 /* --- Gallery（正方形グリッド） --- */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 3px;
+}
+/* PC・タブレット幅では、写真が小さくなりすぎないよう最小幅を指定した可変列数に切り替える */
+@media (min-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
 }
 .gallery-post {
   position: relative;

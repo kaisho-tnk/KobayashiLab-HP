@@ -319,20 +319,19 @@
       grid.appendChild(buildPost(post));
     });
 
-    // タッチ端末：タップでオーバーレイ表示をトグル（ホバーが無い環境向け）
+    // タッチ端末：1タップで直接、拡大ポップアップを開く
+    // （PC同様の「タップでオーバーレイ表示→もう一度で拡大」という二段階はやめ、
+    //   スマホでは他の写真アプリ同様、一発で開く挙動に揃える）
     grid.addEventListener('click', function (e) {
-      var post = e.target.closest('.gallery-post');
-      if (!post) return;
+      var postEl = e.target.closest('.gallery-post');
+      if (!postEl) return;
       if (window.matchMedia('(hover: none)').matches) {
-        var wasOpen = post.classList.contains('is-tapped');
-        Array.prototype.forEach.call(grid.querySelectorAll('.gallery-post.is-tapped'), function (p) {
-          p.classList.remove('is-tapped');
-        });
-        if (!wasOpen) post.classList.add('is-tapped');
+        var post = posts.filter(function (p) { return p.id === postEl.id; })[0];
+        if (post) openModal(post);
       }
     });
 
-    // ダブルクリック（タッチ端末ではダブルタップ）で拡大ポップアップを開く
+    // ダブルクリック（PC・マウス操作向け）で拡大ポップアップを開く
     grid.addEventListener('dblclick', function (e) {
       var postEl = e.target.closest('.gallery-post');
       if (!postEl) return;
