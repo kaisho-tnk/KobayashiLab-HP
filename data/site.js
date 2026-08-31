@@ -3,7 +3,14 @@
    ============================================================ */
 window.SITE = {
   labName: 'JAXA宇宙科学研究所 宇宙飛翔工学研究系 小林研究室',
-  labNameEn: 'Kobayashi Laboratory, ISAS/JAXA',
+  labNameEn: 'Kobayashi Laboratory ISAS/JAXA',
+  // ヘッダーで画面幅に応じて出し分ける、研究室名の3段階（それぞれ必ず2行で表示）。
+  // 収まらなければ full → medium → short の順に切り替わり、それでも収まらなければロゴのみになる。
+  headerName: {
+    full:   { ja: ['JAXA宇宙科学研究所 宇宙飛翔工学研究系', '小林研究室'], en: ['Kobayashi Laboratory', 'Space Flight Systems, ISAS/JAXA'] },
+    medium: { ja: ['JAXA宇宙科学研究所', '小林研究室'], en: ['Kobayashi Laboratory', 'ISAS/JAXA'] },
+    short:  { ja: ['JAXA/ISAS', '小林研究室'], en: ['Kobayashi Lab.', 'ISAS/JAXA'] }
+  },
   affiliation: '東京大学大学院 工学系研究科 航空宇宙工学専攻 / 〇〇学部 〇〇学科',
   affiliationEn: 'Department of Aeronautics and Astronautics, The University of Tokyo',
   copyrightName: '〇〇 Laboratory, The University of Tokyo',
@@ -24,7 +31,7 @@ window.SITE = {
     // JAXAのマークは下側にサイン風の飾りが伸びる形状で、文字の「コア」部分は
     // 全体の上寄り(縦12.6%〜60.5%)にしかない。他ロゴと文字の大きさ・位置を
     // 揃えるため、全体を拡大した上で下にずらして表示する（数値は全体80%縮小後の値）。
-    { label: 'JAXA', href: 'https://www.jaxa.jp/index_j.html', img: 'assets/img/links/jaxa.svg', heightPx: 36, offsetYPx: 5, marginRightPx: 10 },
+    { label: 'JAXA', href: 'https://www.jaxa.jp/index_j.html', img: 'assets/img/links/jaxa.svg', heightPx: 36, offsetYPx: 5 },
     { label: '宇宙科学研究所', href: 'https://www.isas.jaxa.jp/', img: 'assets/img/links/isas.svg' },
     { label: 'あいさすGATE', href: 'https://www.isas.jaxa.jp/home/research-portal/navi/', img: 'assets/img/links/aisasu-gate.svg', heightPx: 24 },
     { label: '東京大学航空宇宙工学科', href: 'https://www.aerospace.t.u-tokyo.ac.jp/', img: 'assets/img/links/todai-aero.svg' }

@@ -110,23 +110,28 @@
 
     var header = document.getElementById('site-header');
     if (header) {
-      var labNameSource = LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName;
-      var headerLabName = esc(labNameSource || '');
-      if (LANG !== 'en') {
-        // 日本語のラボ名は、画面幅にかかわらず必ずこの2行の形を保つ。
-        // 各行を whitespace-nowrap で囲み、行の途中でさらに折り返らないようにする
-        headerLabName = headerLabName.replace(
-          /(.+宇宙飛翔工学研究系)\s+(小林研究室)/,
-          '<span class="block whitespace-nowrap">$1</span><span class="block whitespace-nowrap">$2</span>'
-        );
+      // ヘッダー用の2行表示ラボ名（フル/中間/短縮の3段階）を組み立てる
+      function twoLineHtml(tierKey) {
+        var tier = (SITE.headerName && SITE.headerName[tierKey]) || null;
+        if (!tier) return '';
+        var lines = tier[LANG === 'en' ? 'en' : 'ja'] || [];
+        return lines.map(function (line) {
+          return '<span class="block whitespace-nowrap">' + esc(line) + '</span>';
+        }).join('');
       }
+      var labNameFullHtml = twoLineHtml('full');
+      var labNameMediumHtml = twoLineHtml('medium');
+      var labNameShortHtml = twoLineHtml('short');
+
       header.className = 'fixed w-full top-0 z-50 bg-white border-b border-gray-200';
       header.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
           '<div id="site-header-row" class="flex justify-between items-center h-20">' +
             '<a href="' + PATH_PREFIX + 'index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity flex-shrink-0">' +
               '<img src="' + PATH_PREFIX + 'assets/img/icon.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
-              '<span id="header-lab-name" class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight whitespace-nowrap overflow-hidden">' + headerLabName + '</span>' +
+              '<span id="header-lab-name-full" class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameFullHtml + '</span>' +
+              '<span id="header-lab-name-medium" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameMediumHtml + '</span>' +
+              '<span id="header-lab-name-short" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameShortHtml + '</span>' +
             '</a>' +
             '<div class="flex items-center gap-4 sm:gap-5 flex-shrink-0">' +
               '<nav id="pc-nav" class="hidden space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
@@ -144,23 +149,35 @@
 
       // ヘッダーの中身（ロゴ＋ラボ名＋ナビ＋言語切替）が実際に1行に収まるかを測り、
       // 優先順位: ①言語切替・ハンバーガー(できる限り確保) → ②PCナビ(収まらなければハンバーガーへ)
-      // → ③ラボ名の文字(それでも収まらなければ非表示にし、ロゴだけ残す)
-      // → ④それでも収まらなければ、言語切替をハンバーガーメニューの中へ格納する
+      // → ③ラボ名を フル→中間→短縮 の順に切り替え → ④それでも収まらなければラボ名ごと非表示にし、ロゴだけ残す
+      // → ⑤それでも収まらなければ、言語切替をハンバーガーメニューの中へ格納する
       function fitHeaderNav() {
         var row = document.getElementById('site-header-row');
         var nav = document.getElementById('pc-nav');
         var menuBtn = document.getElementById('mobile-menu-btn');
-        var labName = document.getElementById('header-lab-name');
+        var labTiers = [
+          document.getElementById('header-lab-name-full'),
+          document.getElementById('header-lab-name-medium'),
+          document.getElementById('header-lab-name-short')
+        ];
         var headerLang = document.getElementById('header-lang-switcher');
         var mobileLang = document.getElementById('mobile-lang-switcher');
         if (!row || !nav || !menuBtn) return;
 
-        // 一旦どちらも「理想の状態」（ナビ表示・ラボ名表示・言語切替はヘッダー側）にしてから、
+        function showLabTier(index) {
+          // index: 0=full, 1=medium, 2=short, -1=すべて非表示（ロゴのみ）
+          labTiers.forEach(function (el, i) {
+            if (!el) return;
+            el.classList.toggle('hidden', i !== index);
+          });
+        }
+
+        // 一旦「理想の状態」（ナビ表示・ラボ名フル表記・言語切替はヘッダー側）にしてから、
         // 収まらない要素を優先順位の低い順に諦めていく
         nav.classList.remove('hidden');
         nav.classList.add('flex');
         menuBtn.classList.add('hidden');
-        if (labName) labName.classList.remove('hidden');
+        showLabTier(0);
         if (headerLang) headerLang.classList.remove('hidden');
         if (mobileLang) mobileLang.classList.add('hidden');
 
@@ -170,9 +187,16 @@
           nav.classList.remove('flex');
           menuBtn.classList.remove('hidden');
 
-          // それでも収まらなければ、ラボ名の文字を諦めてロゴだけにする
-          if (labName && row.scrollWidth > row.clientWidth + 1) {
-            labName.classList.add('hidden');
+          // それでも収まらなければ、ラボ名を フル→中間→短縮 の順に切り替えていく
+          var tierIndex = 0;
+          while (row.scrollWidth > row.clientWidth + 1 && tierIndex < labTiers.length - 1) {
+            tierIndex++;
+            showLabTier(tierIndex);
+          }
+
+          // それでも収まらなければ、短縮表記も諦めてロゴだけにする
+          if (row.scrollWidth > row.clientWidth + 1) {
+            showLabTier(-1);
           }
 
           // それでもまだ収まらなければ、言語切替をハンバーガーメニューの中へ移す
