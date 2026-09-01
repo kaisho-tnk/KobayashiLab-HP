@@ -587,7 +587,8 @@ h1, h2, h3, p, li {
    ドラッグ操作の代わりにマウスで使う。タッチ環境では常に非表示にし、
    スワイプ操作の邪魔をしない（hoverが使える＝マウスの環境でのみ表示）。 */
 .gallery-nav-btn,
-.card-carousel-nav-btn {
+.card-carousel-nav-btn,
+.hscroll-nav-btn {
   display: none;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -644,4 +645,30 @@ h1, h2, h3, p, li {
   }
   .card-carousel-nav-prev { left: 0; }
   .card-carousel-nav-next { right: 0; }
+}
+
+/* Members のホームプレビュー用。カードカルーセルと違い、640px以上でも
+   常に横スクロールなので、幅による表示制限は付けない。 */
+@media (hover: hover) and (pointer: fine) {
+  .hscroll-nav-btn {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.15s ease;
+  }
+  .hscroll-nav-btn:hover {
+    color: #1e293b;
+  }
+  .hscroll-nav-prev { left: 0; }
+  .hscroll-nav-next { right: 0; }
 }

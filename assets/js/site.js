@@ -35,16 +35,23 @@
 
   // 横スクロール可能な一覧の左右に、隠れている項目があることを示す
   // フェードグラデーションを出し分ける（スクロール位置に応じて自動更新）。
-  // Members/Research/Facilities のホームプレビューなど、複数箇所から共通で使う。
+  // 合わせて、マウス操作向けの左右矢印ボタンも用意する（トラックパッド／タッチは
+  // ネイティブの横スクロールで操作できるが、マウスのみの環境には手段が無いため）。
+  // Members のホームプレビューなど、複数箇所から共通で使う。
   function initHorizontalScrollFade(scrollEl, leftFadeEl, rightFadeEl) {
     if (!scrollEl || !leftFadeEl || !rightFadeEl) return;
 
+    function atStart() { return scrollEl.scrollLeft <= 1; }
+    function atEnd() { return scrollEl.scrollLeft >= scrollEl.scrollWidth - scrollEl.clientWidth - 1; }
+
+    var navPrev, navNext; // ボタンは後で生成されるため、関数側は参照だけ持っておく
+
     function update() {
       var hasOverflow = scrollEl.scrollWidth > scrollEl.clientWidth + 1;
-      var atStart = scrollEl.scrollLeft <= 1;
-      var atEnd = scrollEl.scrollLeft >= scrollEl.scrollWidth - scrollEl.clientWidth - 1;
-      leftFadeEl.style.opacity = hasOverflow && !atStart ? '1' : '0';
-      rightFadeEl.style.opacity = hasOverflow && !atEnd ? '1' : '0';
+      leftFadeEl.style.opacity = hasOverflow && !atStart() ? '1' : '0';
+      rightFadeEl.style.opacity = hasOverflow && !atEnd() ? '1' : '0';
+      if (navPrev) navPrev.style.visibility = hasOverflow && !atStart() ? 'visible' : 'hidden';
+      if (navNext) navNext.style.visibility = hasOverflow && !atEnd() ? 'visible' : 'hidden';
     }
 
     scrollEl.addEventListener('scroll', update, { passive: true });
@@ -52,6 +59,33 @@
     // レイアウト確定後（画像読み込み等で幅が変わる場合もあるため少し待って再計測）
     requestAnimationFrame(update);
     setTimeout(update, 300);
+
+    // --- マウス操作向けの左右矢印ボタン ---
+    // スクロール領域そのものに付けるとスクロールと一緒に流れてしまうため、
+    // 親要素（position:relative の外枠）に配置する。
+    var navParent = scrollEl.parentElement || scrollEl;
+    navPrev = document.createElement('button');
+    navPrev.type = 'button';
+    navPrev.className = 'hscroll-nav-btn hscroll-nav-prev';
+    navPrev.setAttribute('aria-label', 'Previous');
+    navPrev.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+    var navNextBtn = document.createElement('button');
+    navNextBtn.type = 'button';
+    navNextBtn.className = 'hscroll-nav-btn hscroll-nav-next';
+    navNextBtn.setAttribute('aria-label', 'Next');
+    navNextBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+    navParent.appendChild(navPrev);
+    navParent.appendChild(navNextBtn);
+    navNext = navNextBtn;
+
+    navPrev.addEventListener('click', function () {
+      scrollEl.scrollBy({ left: -scrollEl.clientWidth * 0.8, behavior: 'smooth' });
+    });
+    navNext.addEventListener('click', function () {
+      scrollEl.scrollBy({ left: scrollEl.clientWidth * 0.8, behavior: 'smooth' });
+    });
+
+    update(); // ボタンを追加した直後、現在地に応じた表示/非表示を反映
   }
   window.initHorizontalScrollFade = initHorizontalScrollFade;
 
