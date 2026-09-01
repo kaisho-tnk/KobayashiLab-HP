@@ -16,6 +16,57 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ページ本文の左右余白（全ページの max-w-* コンテナで共通利用）
+   ← 値を変えたいときは --page-pad-x だけ直せば、.page-container と
+     .page-container-bleed 両方に自動で反映される。
+   例: <div class="max-w-4xl mx-auto page-container"> のように、
+       max-w-* と組み合わせて使う（幅そのものはセクションごとに違うため分離） */
+:root {
+  --page-pad-x: 1.25rem; /* 20px（旧 px-5 相当） */
+}
+@media (min-width: 640px) {
+  :root { --page-pad-x: 1.5rem; } /* 24px（旧 sm:px-6 相当） */
+}
+@media (min-width: 1024px) {
+  :root { --page-pad-x: 2rem; } /* 32px（旧 lg:px-8 相当） */
+}
+.page-container {
+  padding-left: var(--page-pad-x);
+  padding-right: var(--page-pad-x);
+}
+/* 横スクロール領域を画面の端まで「はみ出させ」つつ、内側の余白だけ
+   コンテナと揃える（Research/Facilities/Membersのホームプレビューで使用）。
+   640px以上ではスクロール自体が不要になるため、はみ出しも自動で解除される。
+   ・.page-container-bleed … はみ出し＋内側余白を同じ要素にまとめて使う場合
+   ・.bleed-mx / .bleed-px … 外側（はみ出しの margin）と内側（余白の padding）を
+     別々の要素に分けて使う場合（例: Members はオーバーレイを挟むため要素が分かれている） */
+.page-container-bleed {
+  margin-left: calc(-1 * var(--page-pad-x));
+  margin-right: calc(-1 * var(--page-pad-x));
+  padding-left: var(--page-pad-x);
+  padding-right: var(--page-pad-x);
+}
+@media (min-width: 640px) {
+  .page-container-bleed {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.bleed-mx {
+  margin-left: calc(-1 * var(--page-pad-x));
+  margin-right: calc(-1 * var(--page-pad-x));
+}
+.bleed-px {
+  padding-left: var(--page-pad-x);
+  padding-right: var(--page-pad-x);
+}
+@media (min-width: 640px) {
+  .bleed-mx { margin-left: 0; margin-right: 0; }
+  .bleed-px { padding-left: 0; padding-right: 0; }
+}
+
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.4;
   color: var(--brand-dark);
@@ -529,4 +580,67 @@ h1, h2, h3, p, li {
 }
 @media (min-width: 640px) {
   .card-carousel-dots { display: none; }
+}
+
+/* --- Gallery/カードカルーセルの左右ナビゲーションボタン ---
+   ドラッグ操作の代わりにマウスで使う。タッチ環境では常に非表示にし、
+   スワイプ操作の邪魔をしない（hoverが使える＝マウスの環境でのみ表示）。 */
+.gallery-nav-btn,
+.card-carousel-nav-btn {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .gallery-nav-btn {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+  }
+  .gallery-post:hover .gallery-nav-btn,
+  .gallery-modal-viewport:hover .gallery-nav-btn {
+    opacity: 1;
+  }
+  .gallery-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  .gallery-nav-prev { left: 8px; }
+  .gallery-nav-next { right: 8px; }
+}
+
+@media (hover: hover) and (pointer: fine) and (max-width: 639px) {
+  .card-carousel-nav-btn {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.15s ease;
+  }
+  .card-carousel-nav-btn:hover {
+    color: #1e293b;
+  }
+  .card-carousel-nav-prev { left: 0; }
+  .card-carousel-nav-next { right: 0; }
 }

@@ -39,7 +39,7 @@
                 </video>
                 <div class="absolute inset-0 bg-brand-dark/60"></div>
             </div>
-            <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+            <div class="relative z-10 max-w-4xl mx-auto page-container py-20 sm:py-24">
                 <span class="hero-animate inline-block text-white/70 font-medium text-xs sm:text-sm mb-4 tracking-[0.2em]">
                     RESEARCH LABORATORY
                 </span>
@@ -58,7 +58,7 @@
 
         <!-- Research（研究テーマの3枚プレビュー） -->
         <section id="section-research" data-scroll-gap="0" class="py-14 sm:py-16 bg-white">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto page-container">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Research</h2>
                     <a href="research/index.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
@@ -66,14 +66,16 @@
                         <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
-                <div id="research-preview" class="card-carousel fade-up grid grid-flow-col auto-cols-[100%] overflow-x-auto snap-x snap-mandatory gap-4 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:snap-none"></div>
+                <div class="relative page-container-bleed">
+                    <div id="research-preview" class="card-carousel fade-up grid grid-flow-col auto-cols-[100%] overflow-x-auto snap-x snap-mandatory gap-4 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:snap-none"></div>
+                </div>
                 <div id="research-dots" class="card-carousel-dots"></div>
             </div>
         </section>
 
         <!-- Facilities（Researchセクションと同様の3枚プレビュー） -->
         <section id="section-facilities" data-scroll-gap="0" class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto page-container">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Facilities</h2>
                     <a href="facilities/index.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
@@ -81,14 +83,16 @@
                         <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
-                <div id="facilities-preview" class="card-carousel fade-up grid grid-flow-col auto-cols-[100%] overflow-x-auto snap-x snap-mandatory gap-4 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:snap-none"></div>
+                <div class="relative page-container-bleed">
+                    <div id="facilities-preview" class="card-carousel fade-up grid grid-flow-col auto-cols-[100%] overflow-x-auto snap-x snap-mandatory gap-4 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:snap-none"></div>
+                </div>
                 <div id="facilities-dots" class="card-carousel-dots"></div>
             </div>
         </section>
 
         <!-- Recent News（data/news.js から自動生成） -->
         <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto page-container">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">News</h2>
                     <a href="news.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
@@ -104,7 +108,7 @@
 
         <!-- Members（メンバープレビュー） -->
         <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto page-container">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Members</h2>
                     <a href="members.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
@@ -112,8 +116,8 @@
                         <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
-                <div class="relative -mx-4 sm:mx-0">
-                    <div id="members-preview" class="fade-up flex gap-4 overflow-x-auto pb-2 px-4 sm:px-0" style="transition-delay: 100ms; scrollbar-width: thin;"></div>
+                <div class="relative bleed-mx">
+                    <div id="members-preview" class="fade-up flex gap-4 overflow-x-auto pb-2 bleed-px" style="transition-delay: 100ms; scrollbar-width: thin;"></div>
                     <div id="members-scroll-fade-left" class="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
                     <div id="members-scroll-fade-right" class="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent opacity-0 transition-opacity duration-200"></div>
                 </div>
@@ -121,7 +125,7 @@
         </section>
         <!-- Gallery（最新3枚のミニマルなサムネイル） -->
         <section class="py-14 sm:py-16 bg-white border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto page-container">
                 <div class="fade-up flex flex-wrap justify-between items-end gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-semibold text-brand-dark">Gallery</h2>
                     <a href="gallery.html" class="text-brand-blue text-sm font-medium hover:text-blue-700 transition-colors inline-flex items-center group">
@@ -135,7 +139,7 @@
 
         <!-- 配属を検討している方へのCTA -->
         <section class="py-14 sm:py-16 bg-brand-light border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-4xl mx-auto page-container text-center">
                 <a href="join.html" class="fade-up group inline-flex items-center px-6 py-3 bg-brand-dark text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-300">
                     <span data-en="Considering Joining Us?">配属を検討している方はこちら</span>
                     <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>

@@ -86,11 +86,41 @@
       Array.prototype.forEach.call(dotsWrap.children, function (d, di) {
         d.classList.toggle('is-active', di === idx);
       });
+      // カードカルーセルはGalleryと違って無限ループしないため、端では
+      // 進めない方向のボタンを隠す（例: 1枚目では「前へ」を表示しない）
+      if (prevBtn) prevBtn.style.visibility = idx <= 0 ? 'hidden' : 'visible';
+      if (nextBtn) nextBtn.style.visibility = idx >= count - 1 ? 'hidden' : 'visible';
     }
 
     container.addEventListener('scroll', updateActive, { passive: true });
     window.addEventListener('resize', updateActive);
     requestAnimationFrame(updateActive);
+
+    // --- マウス操作：ドラッグではなく左右の矢印ボタンで操作する ---
+    // （ hover が使える＝マウスの環境でのみ、CSS側でボタンを表示する ）
+    // スクロール領域そのものに付けるとスクロールと一緒に流れてしまうため、
+    // 親要素（position:relative の外枠）に配置する。
+    var navParent = container.parentElement || container;
+    var prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'card-carousel-nav-btn card-carousel-nav-prev';
+    prevBtn.setAttribute('aria-label', 'Previous');
+    prevBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+    var nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'card-carousel-nav-btn card-carousel-nav-next';
+    nextBtn.setAttribute('aria-label', 'Next');
+    nextBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+    navParent.appendChild(prevBtn);
+    navParent.appendChild(nextBtn);
+    updateActive(); // ボタンを追加した直後、現在地に応じた表示/非表示を反映
+
+    function goRelative(delta) {
+      var idx = Math.max(0, Math.min(count - 1, currentIndex() + delta));
+      container.scrollTo({ left: container.clientWidth * idx, behavior: 'smooth' });
+    }
+    prevBtn.addEventListener('click', function () { goRelative(-1); });
+    nextBtn.addEventListener('click', function () { goRelative(1); });
 
     // トラックパッドの2本指スワイプ（wheel）は、ネイティブスクロールに渡すと
     // ブラウザ自身の慣性がついて勢いに応じて複数枚進んでしまう（Galleryと同じ理由）。

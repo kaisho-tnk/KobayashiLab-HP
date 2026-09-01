@@ -167,13 +167,11 @@
       jumpTo(e.deltaX > 0 ? idx + 1 : idx - 1, true);
     }, { passive: false });
 
-    // --- マウス／タッチでのドラッグ ---
-    // タッチのスワイプも、ネイティブのタッチスクロールにそのまま渡すと
-    // 端末側の慣性（フリックの勢いで指を離した後も動き続ける）がついてしまい、
-    // wheelと同じ理屈で強さに応じて複数枚めくれてしまう。
-    // マウスドラッグと同様に、こちらでも scrollLeft を直接動かし、ネイティブの
-    // タッチスクロール自体を preventDefault で発生させないことで、慣性そのものを
-    // 起こさせない。
+    // --- タッチでのドラッグ ---
+    // ネイティブのタッチスクロールにそのまま渡すと、端末側の慣性（フリックの勢いで
+    // 指を離した後も動き続ける）がついてしまい、wheelと同じ理屈で強さに応じて
+    // 複数枚めくれてしまう。scrollLeft を自前で動かし、ネイティブのタッチスクロール
+    // 自体を preventDefault で発生させないことで、慣性そのものを起こさせない。
     // ただし、これだけだと「移動距離」しか見ていないため、素早く払うような
     // フリック（移動距離は小さいが速い）が反応しなくなる。離す瞬間の速度も見て、
     // 距離が足りなくても十分速ければ1枚進める（＝どちらの条件でも1枚だけ進む）。
@@ -227,13 +225,6 @@
       jumpTo(targetIndex, true);
     }
 
-    container.addEventListener('mousedown', function (e) {
-      e.preventDefault(); // 画像のネイティブドラッグ／テキスト選択を防ぐ
-      dragStart(e.clientX);
-    });
-    window.addEventListener('mousemove', function (e) { dragMove(e.clientX); });
-    window.addEventListener('mouseup', dragEnd);
-
     container.addEventListener('touchstart', function (e) {
       dragStart(e.touches[0].clientX);
     }, { passive: true });
@@ -244,6 +235,32 @@
     }, { passive: false });
     container.addEventListener('touchend', dragEnd);
     container.addEventListener('touchcancel', dragEnd);
+
+    // --- マウス操作：ドラッグではなく左右の矢印ボタンで操作する ---
+    // （ hover が使える＝マウスの環境でのみ、CSS側でボタンを表示する ）
+    var prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'gallery-nav-btn gallery-nav-prev';
+    prevBtn.setAttribute('aria-label', lang() === 'en' ? 'Previous photo' : '前の画像');
+    prevBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+    var nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'gallery-nav-btn gallery-nav-next';
+    nextBtn.setAttribute('aria-label', lang() === 'en' ? 'Next photo' : '次の画像');
+    nextBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+    container.appendChild(prevBtn);
+    container.appendChild(nextBtn);
+
+    prevBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation(); // グリッド側のタップ／ダブルクリック処理に伝播させない
+      jumpTo(currentIndex() - 1, true);
+    });
+    nextBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      jumpTo(currentIndex() + 1, true);
+    });
 
 
     // ドラッグ後に意図しないクリック（タップ扱いのトグルなど）が
