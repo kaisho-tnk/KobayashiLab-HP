@@ -283,8 +283,8 @@
             (l.offsetYPx ? ' transform:translateY(' + l.offsetYPx + 'px);' : '') +
             (l.marginRightPx ? ' margin-right:' + l.marginRightPx + 'px;' : '') + '"';
         }
-        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" class="inline-flex items-center justify-center h-7 w-16 hover:opacity-80 transition-opacity">' +
-          '<img src="' + PATH_PREFIX + esc(l.img) + '" alt="' + esc(l.label) + '" class="max-h-full max-w-full object-contain"' + extraStyle + '>' +
+        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" class="inline-flex items-center h-7 hover:opacity-80 transition-opacity">' +
+          '<img src="' + PATH_PREFIX + esc(l.img) + '" alt="' + esc(l.label) + '" class="h-full w-auto object-contain"' + extraStyle + '>' +
         '</a>';
       }).join('');
       var extra = '';
@@ -304,7 +304,7 @@
             links +
           '</nav>' +
           (relatedLinks
-            ? '<nav class="flex flex-wrap justify-center items-center gap-5 mb-8 pt-6 border-t border-white/10" style="transform:translateX(10px);" aria-label="関連リンク">' +
+            ? '<nav class="w-full max-w-[328px] mx-auto flex justify-between items-center mb-8 pt-6 border-t border-white/10" aria-label="関連リンク">' +
                 relatedLinks +
               '</nav>'
             : '') +

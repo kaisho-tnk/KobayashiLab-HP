@@ -32,8 +32,8 @@ window.SITE = {
     // 全体の上寄り(縦12.6%〜60.5%)にしかない。他ロゴと文字の大きさ・位置を
     // 揃えるため、全体を拡大した上で下にずらして表示する（数値は全体80%縮小後の値）。
     { label: 'JAXA', href: 'https://www.jaxa.jp/index_j.html', img: 'assets/img/links/jaxa.svg', heightPx: 36, offsetYPx: 5 },
-    { label: '宇宙科学研究所', href: 'https://www.isas.jaxa.jp/', img: 'assets/img/links/isas.svg' },
-    { label: 'あいさすGATE', href: 'https://www.isas.jaxa.jp/home/research-portal/navi/', img: 'assets/img/links/aisasu-gate.svg', heightPx: 24 },
+    { label: '宇宙科学研究所', href: 'https://www.isas.jaxa.jp/', img: 'assets/img/links/isas.svg', heightPx: 17 },
+    { label: '能代ロケット実験場', href: 'https://www.isas.jaxa.jp/about/facilities/noshiro.html', img: 'assets/img/links/noshiro.svg', heightPx: 30, offsetYPx: 6 },
     { label: '東京大学航空宇宙工学科', href: 'https://www.aerospace.t.u-tokyo.ac.jp/', img: 'assets/img/links/todai-aero.svg' }
     // SOKENDAIは一旦非表示（再度使う際はこのコメントを外す）
     // { label: 'SOKENDAI 先端学術院 宇宙科学コース', href: 'https://www.isas.jaxa.jp/sokendai/', img: 'assets/img/links/sokendai.svg' }
