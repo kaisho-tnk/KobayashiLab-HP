@@ -116,31 +116,61 @@
     // 端末側の慣性（フリックの勢いで指を離した後も動き続ける）がついてしまい、
     // wheelと同じ理屈で強さに応じて複数カード分進んでしまう。
     // scrollLeft を自前で動かし、ネイティブのタッチスクロール自体を
-    // preventDefault で発生させないことで、慣性そのものを起こさせない
-    // （＝離した時点の位置に、スナップで1枚だけ吸着する）。
+    // preventDefault で発生させないことで、慣性そのものを起こさせない。
+    // ただし、これだけだと「移動距離」しか見ていないため、素早く払うような
+    // フリック（移動距離は小さいが速い）が反応しなくなる。離す瞬間の速度も見て、
+    // 距離が足りなくても十分速ければ1枚進める。
     var dragging = false;
     var moved = false;
     var startX = 0;
     var startScrollLeft = 0;
+    var startIndex = 0;
+    var lastX = 0;
+    var lastT = 0;
+    var velocity = 0; // px/ms（負: 左方向＝次へ、正: 右方向＝前へ）
 
     container.addEventListener('touchstart', function (e) {
       dragging = true;
       moved = false;
       startX = e.touches[0].clientX;
       startScrollLeft = container.scrollLeft;
+      startIndex = currentIndex();
+      lastX = startX;
+      lastT = Date.now();
+      velocity = 0;
       container.style.scrollSnapType = 'none'; // ドラッグ中はスナップが邪魔をしないよう一時停止
     }, { passive: true });
     container.addEventListener('touchmove', function (e) {
       if (!dragging) return;
       e.preventDefault(); // ネイティブのタッチスクロール（＝慣性の発生源）に渡さない
-      var dx = e.touches[0].clientX - startX;
+      var clientX = e.touches[0].clientX;
+      var now = Date.now();
+      var dt = now - lastT;
+      if (dt > 0) velocity = (clientX - lastX) / dt;
+      lastX = clientX;
+      lastT = now;
+
+      var dx = clientX - startX;
       if (Math.abs(dx) > 4) moved = true;
       container.scrollLeft = startScrollLeft - dx;
     }, { passive: false });
     function touchDragEnd() {
       if (!dragging) return;
       dragging = false;
-      container.style.scrollSnapType = 'x mandatory'; // スナップを再開し、最寄りの1枚に吸着させる
+      container.style.scrollSnapType = 'x mandatory'; // スナップを再開（吸着アニメーションに利用）
+
+      var w = container.clientWidth || 1;
+      var scrollDelta = container.scrollLeft - startScrollLeft;
+      var farEnough = Math.abs(scrollDelta) > w * 0.15;
+      var fastEnough = Math.abs(velocity) > 0.35; // px/ms。素早いフリックはこちらで拾う
+
+      var targetIndex = startIndex;
+      if (farEnough || fastEnough) {
+        var direction = fastEnough ? (velocity < 0 ? 1 : -1) : (scrollDelta > 0 ? 1 : -1);
+        targetIndex = startIndex + direction;
+      }
+      targetIndex = Math.max(0, Math.min(count - 1, targetIndex));
+      container.scrollTo({ left: container.clientWidth * targetIndex, behavior: 'smooth' });
     }
     container.addEventListener('touchend', touchDragEnd);
     container.addEventListener('touchcancel', touchDragEnd);

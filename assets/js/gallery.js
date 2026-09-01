@@ -173,21 +173,38 @@
     // wheelと同じ理屈で強さに応じて複数枚めくれてしまう。
     // マウスドラッグと同様に、こちらでも scrollLeft を直接動かし、ネイティブの
     // タッチスクロール自体を preventDefault で発生させないことで、慣性そのものを
-    // 起こさせない（＝離した時点の位置に、スナップで1枚だけ吸着する）。
+    // 起こさせない。
+    // ただし、これだけだと「移動距離」しか見ていないため、素早く払うような
+    // フリック（移動距離は小さいが速い）が反応しなくなる。離す瞬間の速度も見て、
+    // 距離が足りなくても十分速ければ1枚進める（＝どちらの条件でも1枚だけ進む）。
     var dragging = false;
     var moved = false;
     var startX = 0;
     var startScrollLeft = 0;
+    var startIndex = 0;
+    var lastX = 0;
+    var lastT = 0;
+    var velocity = 0; // px/ms（負: 左方向＝次へ、正: 右方向＝前へ）
 
     function dragStart(clientX) {
       dragging = true;
       moved = false;
       startX = clientX;
       startScrollLeft = track.scrollLeft;
+      startIndex = Math.round(startScrollLeft / (track.clientWidth || 1));
+      lastX = clientX;
+      lastT = Date.now();
+      velocity = 0;
       track.style.scrollSnapType = 'none'; // ドラッグ中はスナップが邪魔をしないよう一時停止
     }
     function dragMove(clientX) {
       if (!dragging) return;
+      var now = Date.now();
+      var dt = now - lastT;
+      if (dt > 0) velocity = (clientX - lastX) / dt;
+      lastX = clientX;
+      lastT = now;
+
       var dx = clientX - startX;
       if (Math.abs(dx) > 4) moved = true;
       track.scrollLeft = startScrollLeft - dx;
@@ -195,7 +212,19 @@
     function dragEnd() {
       if (!dragging) return;
       dragging = false;
-      track.style.scrollSnapType = 'x mandatory'; // スナップを再開し、最寄りの1枚に吸着させる
+      track.style.scrollSnapType = 'x mandatory'; // スナップを再開（吸着アニメーションに利用）
+
+      var w = track.clientWidth || 1;
+      var scrollDelta = track.scrollLeft - startScrollLeft; // 正: 次方向へ移動 / 負: 前方向へ移動
+      var farEnough = Math.abs(scrollDelta) > w * 0.15;
+      var fastEnough = Math.abs(velocity) > 0.35; // px/ms。素早いフリックはこちらで拾う
+
+      var targetIndex = startIndex;
+      if (farEnough || fastEnough) {
+        var direction = fastEnough ? (velocity < 0 ? 1 : -1) : (scrollDelta > 0 ? 1 : -1);
+        targetIndex = startIndex + direction;
+      }
+      jumpTo(targetIndex, true);
     }
 
     container.addEventListener('mousedown', function (e) {
@@ -215,6 +244,7 @@
     }, { passive: false });
     container.addEventListener('touchend', dragEnd);
     container.addEventListener('touchcancel', dragEnd);
+
 
     // ドラッグ後に意図しないクリック（タップ扱いのトグルなど）が
     // 発火しないよう、大きく動いた場合はクリックを打ち消す
