@@ -116,7 +116,7 @@ window.GALLERY_POSTS = [
     body: '能代ロケット実験場にて、燃焼試験に向けた実験装置のセッティングを行いました。当日は複数班に分かれて計測系・推進系それぞれの最終確認を実施しました。',
     bodyEn: 'We set up the experimental apparatus for a combustion test at the Noshiro Rocket Testing Center. On the day, we split into several teams to run final checks on the measurement and propulsion systems respectively.',
     images: [
-      'https://placehold.co/800x800/F2C75C/ffffff?text=Photo+7'
+      'assets/img/gallery/basketball/1.jpg'
     ]
   },
   {
