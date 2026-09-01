@@ -56,8 +56,10 @@
     var dotsWrap = document.createElement('div');
     dotsWrap.className = 'gallery-dots';
     images.forEach(function (_, i) {
-      var dot = document.createElement('span');
+      var dot = document.createElement('button');
+      dot.type = 'button';
       dot.className = 'gallery-dot' + (i === 0 ? ' is-active' : '');
+      dot.setAttribute('aria-label', (i + 1) + ' / ' + images.length);
       dotsWrap.appendChild(dot);
     });
     return dotsWrap;
@@ -131,6 +133,17 @@
       var ri = (newIndex - 1 + count) % count;
       Array.prototype.forEach.call(dotsWrap.children, function (d, di) {
         d.classList.toggle('is-active', di === ri);
+      });
+    }
+
+    // ドットをクリックすると、その画像へ直接ジャンプする
+    if (dotsWrap) {
+      Array.prototype.forEach.call(dotsWrap.children, function (dot, di) {
+        dot.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation(); // グリッド側のタップ／ダブルクリック処理に伝播させない
+          jumpTo(di + 1, true); // 実画像は内部インデックス1〜countに対応
+        });
       });
     }
 
