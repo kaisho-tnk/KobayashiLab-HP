@@ -87,7 +87,7 @@
       var delay = i === 0 ? '' : ' style="transition-delay: ' + (i * 50) + 'ms;"';
       var summary = TA(f, 'previewSummary');
       var addressLine = T(f, 'addressLine');
-      return '<a href="' + pfx + 'facilities/index.html#' + esc(f.id) + '" class="bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors"' + delay + '>' +
+      return '<a href="' + pfx + 'facilities/index.html#' + esc(f.id) + '" class="snap-center bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors"' + delay + '>' +
         (ICONS[f.icon] || ICONS.building) +
         '<p class="text-sm font-semibold text-brand-dark mb-1">' + esc(T(f, 'name')) + '</p>' +
         '<p class="text-xs text-gray-500">' + summary.map(esc).join('<br>') + '</p>' +
@@ -102,7 +102,12 @@
     if (listEl) renderFacilitiesList(listEl);
 
     var preview = document.getElementById('facilities-preview');
-    if (preview) renderFacilitiesPreview(preview);
+    if (preview) {
+      renderFacilitiesPreview(preview);
+      if (window.initCardCarousel) {
+        window.initCardCarousel(preview, document.getElementById('facilities-dots'), list().length);
+      }
+    }
 
     if (window.scrollToHashTarget) window.scrollToHashTarget();
   });

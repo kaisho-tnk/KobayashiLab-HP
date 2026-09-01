@@ -89,11 +89,11 @@
       '</div>';
   }
 
-  /* ---------- index.html：Research プレビュー（3枚、既存デザインを踏襲） ---------- */
+  /* ---------- index.html：Research プレビュー（sm:以上はグリッド、未満は1枚ずつのカルーセル） ---------- */
   function renderResearchPreview(el) {
     el.innerHTML = themes().map(function (t, i) {
       var delay = i === 0 ? '' : ' style="transition-delay: ' + (i * 50) + 'ms;"';
-      return '<a href="' + prefix() + 'research/' + esc(t.id) + '.html" class="bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors"' + delay + '>' +
+      return '<a href="' + prefix() + 'research/' + esc(t.id) + '.html" class="snap-center bg-brand-light rounded-xl border border-gray-200 p-5 hover:border-gray-300 transition-colors"' + delay + '>' +
         (ICONS[t.icon] || ICONS.flask) +
         '<p class="text-sm font-semibold text-brand-dark mb-1">' + esc(T(t, 'title')) + '</p>' +
         '<p class="text-xs text-gray-500">' + esc(T(t, 'summary')) + '</p>' +
@@ -109,7 +109,12 @@
     if (detail) renderThemeDetail(detail, document.body.getAttribute('data-theme-id'));
 
     var preview = document.getElementById('research-preview');
-    if (preview) renderResearchPreview(preview);
+    if (preview) {
+      renderResearchPreview(preview);
+      if (window.initCardCarousel) {
+        window.initCardCarousel(preview, document.getElementById('research-dots'), themes().length);
+      }
+    }
 
     if (window.scrollToHashTarget) window.scrollToHashTarget();
   });

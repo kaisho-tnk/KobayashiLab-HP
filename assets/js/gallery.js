@@ -98,123 +98,99 @@
     return el;
   }
 
-  /* ---------- スワイプ（トラックパッド／タッチ／マウスドラッグ） ----------
-     ・トラックパッドの2本指スワイプは wheel イベント（横方向の deltaX）で検出
-     ・タッチ端末は touchstart/move/end
-     ・マウスでのクリック&ドラッグも保険として利用可能
+  /* ---------- スワイプ ----------
+     ・タッチのスワイプ、マウスでのクリック&ドラッグは、ブラウザ標準の横スクロール＋
+       scroll-snap（CSS側で設定）にそのまま任せる。「1枚ずつ確実に止まる」は
+       mandatory スナップの標準動作。
+     ・トラックパッドの2本指スワイプ（wheel）だけは、ネイティブスクロールに渡すと
+       ブラウザ自身の慣性がついてしまい、勢いに応じて何枚も飛んでしまう。
+       これだけは preventDefault で渡さず、自前で「1ジェスチャーにつき1枚だけ」
+       進めるよう制御する。
+     ・マウスでのクリック&ドラッグだけは、標準のスクロールで扱われないため
+       最小限のJSで scrollLeft を直接動かす（離した瞬間はCSSスナップに委ねる）。
      ・先頭/末尾にクローン画像を仕込み、スライドは境目も含めて常に連続。
-       クローンに着地した直後（transitionend）だけ、アニメーションなしで
-       本物の画像側へ瞬間移動して辻褄を合わせる（同じ絵なので見た目は変わらない） */
+       スクロールが止まってクローンに着地したときだけ、瞬間的に本物の画像側へ
+       ジャンプして辻褄を合わせる（同じ絵なので見た目は変わらない）。 */
   function initSwipe(container, track, dotsWrap, count) {
     if (count <= 1) return; // 1枚だけならスワイプ不要
 
     // 内部インデックスは 0=先頭クローン(=最後の複製) 〜 count+1=末尾クローン(=1枚目の複製)
     // 実画像は 1〜count に対応する
-    var index = 1;
-    var startX = 0;
-    var deltaX = 0;
-    var dragging = false;
-    var moved = false;
-    var width = 0;
-    var wheelLock = false;
-
-    function setTransform(px, animate) {
-      track.style.transition = animate ? 'transform 0.3s ease' : 'none';
-      track.style.transform = 'translate3d(' + px + 'px,0,0)';
+    function currentIndex() {
+      var w = track.clientWidth;
+      return w ? Math.round(track.scrollLeft / w) : 1;
     }
 
-    function realIndex() {
-      return (index - 1 + count) % count;
+    function jumpTo(newIndex, animate) {
+      if (animate) track.scrollTo({ left: track.clientWidth * newIndex, behavior: 'smooth' });
+      else track.scrollLeft = track.clientWidth * newIndex;
     }
 
-    function updateDots() {
+    function updateDots(newIndex) {
       if (!dotsWrap) return;
-      var ri = realIndex();
+      var ri = (newIndex - 1 + count) % count;
       Array.prototype.forEach.call(dotsWrap.children, function (d, di) {
         d.classList.toggle('is-active', di === ri);
       });
     }
 
-    function goTo(newIndex, animate) {
-      index = newIndex;
-      setTransform(-index * width, animate !== false);
-      updateDots();
-    }
+    // スクロールが落ち着いたタイミングでクローンに着地していないか確認し、
+    // 見えないうちに本物の画像側へ瞬間移動する（無限ループの実現）
+    var settleTimer = null;
+    track.addEventListener('scroll', function () {
+      var idx = currentIndex();
+      updateDots(idx);
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(function () {
+        if (idx === count + 1) jumpTo(1, false);
+        else if (idx === 0) jumpTo(count, false);
+      }, 120);
+    }, { passive: true });
 
-    // 現在位置へスナップ（ドラッグ量が閾値未満だったときなど）
-    function settle() { goTo(index, true); }
-    function next() { goTo(index + 1, true); }
-    function prev() { goTo(index - 1, true); }
-
-    // クローンに着地したら、見えないうちに本物の画像側へ瞬間移動
-    track.addEventListener('transitionend', function (e) {
-      if (e.propertyName !== 'transform') return;
-      if (index === count + 1) {
-        goTo(1, false);
-      } else if (index === 0) {
-        goTo(count, false);
-      }
-    });
-
-    function start(clientX) {
-      dragging = true;
-      moved = false;
-      startX = clientX;
-      deltaX = 0;
-      width = container.getBoundingClientRect().width;
-    }
-
-    function move(clientX) {
-      if (!dragging) return;
-      deltaX = clientX - startX;
-      if (Math.abs(deltaX) > 4) moved = true;
-      setTransform(-index * width + deltaX, false);
-    }
-
-    function end() {
-      if (!dragging) return;
-      dragging = false;
-      var threshold = width * 0.15;
-      if (deltaX < -threshold) next();
-      else if (deltaX > threshold) prev();
-      else settle();
-      deltaX = 0;
-    }
-
-    // --- トラックパッド（2本指スワイプ） ---
-    container.addEventListener('wheel', function (e) {
+    // --- トラックパッド（2本指スワイプ）：ネイティブスクロールに渡さず自前で1枚だけ進める ---
+    // 一度の物理的なスワイプ動作は、連続した wheel イベントの「かたまり」として発火する。
+    // 「一定時間 wheel イベントが来なくなった＝ジェスチャーが終わった」を検出してから
+    // 次のジェスチャーを受け付けることで、動作の強さに関わらず必ず1枚だけ進むようにする。
+    var wheelLock = false;
+    var wheelIdleTimer = null;
+    track.addEventListener('wheel', function (e) {
       if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // 縦方向はページスクロールに譲る
-      e.preventDefault();
-      if (wheelLock) return;
+      e.preventDefault(); // ここでネイティブスクロールに渡さないことで、慣性による暴走を防ぐ
       if (Math.abs(e.deltaX) < 12) return; // 微小なノイズは無視
+
+      clearTimeout(wheelIdleTimer);
+      wheelIdleTimer = setTimeout(function () { wheelLock = false; }, 150);
+
+      if (wheelLock) return;
       wheelLock = true;
-      if (e.deltaX > 0) next(); else prev();
-      setTimeout(function () { wheelLock = false; }, 380);
+      var idx = currentIndex();
+      jumpTo(e.deltaX > 0 ? idx + 1 : idx - 1, true);
     }, { passive: false });
 
-    // --- マウス（クリック&ドラッグも保険として残す） ---
+    // --- マウスでのクリック&ドラッグ（タッチはブラウザ標準に任せる） ---
+    var dragging = false;
+    var moved = false;
+    var startX = 0;
+    var startScrollLeft = 0;
+
     container.addEventListener('mousedown', function (e) {
       e.preventDefault(); // 画像のネイティブドラッグ／テキスト選択を防ぐ
-      width = container.getBoundingClientRect().width;
-      start(e.clientX);
+      dragging = true;
+      moved = false;
+      startX = e.clientX;
+      startScrollLeft = track.scrollLeft;
+      track.style.scrollSnapType = 'none'; // ドラッグ中はスナップが邪魔をしないよう一時停止
     });
     window.addEventListener('mousemove', function (e) {
-      if (dragging) move(e.clientX);
+      if (!dragging) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      track.scrollLeft = startScrollLeft - dx;
     });
     window.addEventListener('mouseup', function () {
-      end();
-    });
-
-    // --- タッチ（指でのスワイプ） ---
-    container.addEventListener('touchstart', function (e) {
-      width = container.getBoundingClientRect().width;
-      start(e.touches[0].clientX);
-    }, { passive: true });
-    container.addEventListener('touchmove', function (e) {
-      move(e.touches[0].clientX);
-    }, { passive: true });
-    container.addEventListener('touchend', function () {
-      end();
+      if (!dragging) return;
+      dragging = false;
+      track.style.scrollSnapType = 'x mandatory'; // スナップを再開し、最寄りの1枚に吸着させる
     });
 
     // ドラッグ後に意図しないクリック（タップ扱いのトグルなど）が
@@ -228,17 +204,15 @@
     }, true);
 
     window.addEventListener('resize', function () {
-      width = container.getBoundingClientRect().width;
-      setTransform(-index * width, false);
+      jumpTo(currentIndex(), false);
     });
 
     // 初期位置（実画像1枚目）へ、アニメーションなしでセット
     // ※ buildPost() の実行時点ではまだ DOM に挿入されておらず幅が取れないため、
     //    挿入が完了する次フレームまで待ってから計測する
     requestAnimationFrame(function () {
-      width = container.getBoundingClientRect().width;
-      setTransform(-index * width, false);
-      updateDots();
+      jumpTo(1, false);
+      updateDots(1);
     });
   }
 

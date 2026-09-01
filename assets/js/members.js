@@ -310,34 +310,19 @@
     }).join('');
   }
 
-  // 横スクロール可能な members-preview の左右に、隠れているメンバーがいることを
-  // 示すフェードグラデーションを出し分ける（スクロール位置に応じて自動更新）
-  function initMembersScrollFade(el) {
-    var leftFade = document.getElementById('members-scroll-fade-left');
-    var rightFade = document.getElementById('members-scroll-fade-right');
-    if (!leftFade || !rightFade) return;
-
-    function update() {
-      var hasOverflow = el.scrollWidth > el.clientWidth + 1;
-      var atStart = el.scrollLeft <= 1;
-      var atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 1;
-      leftFade.style.opacity = hasOverflow && !atStart ? '1' : '0';
-      rightFade.style.opacity = hasOverflow && !atEnd ? '1' : '0';
-    }
-
-    el.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    // レイアウト確定後（画像読み込み等で幅が変わる場合もあるため少し待って再計測）
-    requestAnimationFrame(update);
-    setTimeout(update, 300);
-  }
+  // 横スクロール可能な members-preview の左右のフェード表示は
+  // site.js の window.initHorizontalScrollFade を共通利用する
 
   document.addEventListener('DOMContentLoaded', function () {
     renderMembersPage();
     var preview = document.getElementById('members-preview');
     if (preview) {
       renderMembersPreview(preview);
-      initMembersScrollFade(preview);
+      window.initHorizontalScrollFade(
+        preview,
+        document.getElementById('members-scroll-fade-left'),
+        document.getElementById('members-scroll-fade-right')
+      );
     }
     // site.js の scrollToHashTarget は members.js より先に実行され、
     // その時点ではまだカードが存在しないため、書き込み完了後にここで改めて呼ぶ

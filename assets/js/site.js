@@ -33,6 +33,87 @@
   var PATH_PREFIX = pathPrefix();
   window.getPathPrefix = pathPrefix; // research.js / facilities.js など他スクリプトからも参照できるように公開
 
+  // 横スクロール可能な一覧の左右に、隠れている項目があることを示す
+  // フェードグラデーションを出し分ける（スクロール位置に応じて自動更新）。
+  // Members/Research/Facilities のホームプレビューなど、複数箇所から共通で使う。
+  function initHorizontalScrollFade(scrollEl, leftFadeEl, rightFadeEl) {
+    if (!scrollEl || !leftFadeEl || !rightFadeEl) return;
+
+    function update() {
+      var hasOverflow = scrollEl.scrollWidth > scrollEl.clientWidth + 1;
+      var atStart = scrollEl.scrollLeft <= 1;
+      var atEnd = scrollEl.scrollLeft >= scrollEl.scrollWidth - scrollEl.clientWidth - 1;
+      leftFadeEl.style.opacity = hasOverflow && !atStart ? '1' : '0';
+      rightFadeEl.style.opacity = hasOverflow && !atEnd ? '1' : '0';
+    }
+
+    scrollEl.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    // レイアウト確定後（画像読み込み等で幅が変わる場合もあるため少し待って再計測）
+    requestAnimationFrame(update);
+    setTimeout(update, 300);
+  }
+  window.initHorizontalScrollFade = initHorizontalScrollFade;
+
+  // 640px未満で「1枚ずつscroll-snapでめくれるカルーセル」になっているコンテナに、
+  // 現在位置を示すドットを付ける（Research/Facilitiesのホームプレビューなどで使用）。
+  // 640px以上（通常のグリッド表示）ではCSS側でドット自体を非表示にしている。
+  function initCardCarousel(container, dotsWrap, count) {
+    if (!container || !dotsWrap || count <= 1) return;
+
+    dotsWrap.innerHTML = '';
+    for (var i = 0; i < count; i++) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', (i + 1) + ' / ' + count);
+      dot.className = i === 0 ? 'is-active' : '';
+      (function (idx) {
+        dot.addEventListener('click', function () {
+          container.scrollTo({ left: container.clientWidth * idx, behavior: 'smooth' });
+        });
+      })(i);
+      dotsWrap.appendChild(dot);
+    }
+
+    function currentIndex() {
+      var w = container.clientWidth;
+      if (!w) return 0;
+      return Math.max(0, Math.min(count - 1, Math.round(container.scrollLeft / w)));
+    }
+
+    function updateActive() {
+      var idx = currentIndex();
+      Array.prototype.forEach.call(dotsWrap.children, function (d, di) {
+        d.classList.toggle('is-active', di === idx);
+      });
+    }
+
+    container.addEventListener('scroll', updateActive, { passive: true });
+    window.addEventListener('resize', updateActive);
+    requestAnimationFrame(updateActive);
+
+    // トラックパッドの2本指スワイプ（wheel）は、ネイティブスクロールに渡すと
+    // ブラウザ自身の慣性がついて勢いに応じて複数枚進んでしまう（Galleryと同じ理由）。
+    // ここだけ preventDefault で渡さず、1ジェスチャーにつき必ず1枚だけ進める。
+    var wheelLock = false;
+    var wheelIdleTimer = null;
+    container.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // 縦方向はページスクロールに譲る
+      e.preventDefault();
+      if (Math.abs(e.deltaX) < 12) return; // 微小なノイズは無視
+
+      clearTimeout(wheelIdleTimer);
+      wheelIdleTimer = setTimeout(function () { wheelLock = false; }, 150);
+
+      if (wheelLock) return;
+      wheelLock = true;
+      var idx = currentIndex();
+      var nextIdx = Math.max(0, Math.min(count - 1, e.deltaX > 0 ? idx + 1 : idx - 1));
+      container.scrollTo({ left: container.clientWidth * nextIdx, behavior: 'smooth' });
+    }, { passive: false });
+  }
+  window.initCardCarousel = initCardCarousel;
+
   /* ---------- 言語切り替え（JP/EN） ----------
      ・localStorage に保存し、ページを跨いでも保持する
      ・切り替え時はページを再読み込みして、そのページの表示内容を
