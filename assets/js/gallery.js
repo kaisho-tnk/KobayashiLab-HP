@@ -167,31 +167,54 @@
       jumpTo(e.deltaX > 0 ? idx + 1 : idx - 1, true);
     }, { passive: false });
 
-    // --- マウスでのクリック&ドラッグ（タッチはブラウザ標準に任せる） ---
+    // --- マウス／タッチでのドラッグ ---
+    // タッチのスワイプも、ネイティブのタッチスクロールにそのまま渡すと
+    // 端末側の慣性（フリックの勢いで指を離した後も動き続ける）がついてしまい、
+    // wheelと同じ理屈で強さに応じて複数枚めくれてしまう。
+    // マウスドラッグと同様に、こちらでも scrollLeft を直接動かし、ネイティブの
+    // タッチスクロール自体を preventDefault で発生させないことで、慣性そのものを
+    // 起こさせない（＝離した時点の位置に、スナップで1枚だけ吸着する）。
     var dragging = false;
     var moved = false;
     var startX = 0;
     var startScrollLeft = 0;
 
-    container.addEventListener('mousedown', function (e) {
-      e.preventDefault(); // 画像のネイティブドラッグ／テキスト選択を防ぐ
+    function dragStart(clientX) {
       dragging = true;
       moved = false;
-      startX = e.clientX;
+      startX = clientX;
       startScrollLeft = track.scrollLeft;
       track.style.scrollSnapType = 'none'; // ドラッグ中はスナップが邪魔をしないよう一時停止
-    });
-    window.addEventListener('mousemove', function (e) {
+    }
+    function dragMove(clientX) {
       if (!dragging) return;
-      var dx = e.clientX - startX;
+      var dx = clientX - startX;
       if (Math.abs(dx) > 4) moved = true;
       track.scrollLeft = startScrollLeft - dx;
-    });
-    window.addEventListener('mouseup', function () {
+    }
+    function dragEnd() {
       if (!dragging) return;
       dragging = false;
       track.style.scrollSnapType = 'x mandatory'; // スナップを再開し、最寄りの1枚に吸着させる
+    }
+
+    container.addEventListener('mousedown', function (e) {
+      e.preventDefault(); // 画像のネイティブドラッグ／テキスト選択を防ぐ
+      dragStart(e.clientX);
     });
+    window.addEventListener('mousemove', function (e) { dragMove(e.clientX); });
+    window.addEventListener('mouseup', dragEnd);
+
+    container.addEventListener('touchstart', function (e) {
+      dragStart(e.touches[0].clientX);
+    }, { passive: true });
+    container.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      e.preventDefault(); // ネイティブのタッチスクロール（＝慣性の発生源）に渡さない
+      dragMove(e.touches[0].clientX);
+    }, { passive: false });
+    container.addEventListener('touchend', dragEnd);
+    container.addEventListener('touchcancel', dragEnd);
 
     // ドラッグ後に意図しないクリック（タップ扱いのトグルなど）が
     // 発火しないよう、大きく動いた場合はクリックを打ち消す

@@ -312,14 +312,14 @@ h1, h2, h3, p, li {
   white-space: pre-line;
 }
 .gallery-modal-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 20px;
   line-height: 1;
@@ -328,6 +328,7 @@ h1, h2, h3, p, li {
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  z-index: 101;
 }
 .gallery-modal-close:hover {
   background: rgba(0, 0, 0, 0.7);

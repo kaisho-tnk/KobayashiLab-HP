@@ -111,6 +111,49 @@
       var nextIdx = Math.max(0, Math.min(count - 1, e.deltaX > 0 ? idx + 1 : idx - 1));
       container.scrollTo({ left: container.clientWidth * nextIdx, behavior: 'smooth' });
     }, { passive: false });
+
+    // タッチのスワイプも、ネイティブのタッチスクロールにそのまま渡すと
+    // 端末側の慣性（フリックの勢いで指を離した後も動き続ける）がついてしまい、
+    // wheelと同じ理屈で強さに応じて複数カード分進んでしまう。
+    // scrollLeft を自前で動かし、ネイティブのタッチスクロール自体を
+    // preventDefault で発生させないことで、慣性そのものを起こさせない
+    // （＝離した時点の位置に、スナップで1枚だけ吸着する）。
+    var dragging = false;
+    var moved = false;
+    var startX = 0;
+    var startScrollLeft = 0;
+
+    container.addEventListener('touchstart', function (e) {
+      dragging = true;
+      moved = false;
+      startX = e.touches[0].clientX;
+      startScrollLeft = container.scrollLeft;
+      container.style.scrollSnapType = 'none'; // ドラッグ中はスナップが邪魔をしないよう一時停止
+    }, { passive: true });
+    container.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      e.preventDefault(); // ネイティブのタッチスクロール（＝慣性の発生源）に渡さない
+      var dx = e.touches[0].clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      container.scrollLeft = startScrollLeft - dx;
+    }, { passive: false });
+    function touchDragEnd() {
+      if (!dragging) return;
+      dragging = false;
+      container.style.scrollSnapType = 'x mandatory'; // スナップを再開し、最寄りの1枚に吸着させる
+    }
+    container.addEventListener('touchend', touchDragEnd);
+    container.addEventListener('touchcancel', touchDragEnd);
+
+    // ドラッグ後に意図しないクリック（カードへの遷移）が発火しないよう、
+    // 大きく動いた場合はクリックを打ち消す
+    container.addEventListener('click', function (e) {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    }, true);
   }
   window.initCardCarousel = initCardCarousel;
 
