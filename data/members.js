@@ -43,6 +43,9 @@
                   例: '2027-03-M' → 「2027年3月 修士課程修了」/ "March 2027 (Master's)"
                       '2026-03-B' → 「2026年3月 学部卒業」/ "March 2026 (Bachelor's)"
    ・role / roleEn             … Faculty のみで使用。役職。複数あれば配列で改行表示されます
+   ・school / schoolEn         … Students のみで使用。所属大学名（当研究室の学生でも、
+                                  他大学に在籍したまま研究に参加している場合などに指定）。
+                                  role と同じ扱いで、複数あれば配列で改行表示されます
    ・field/degree/contact/bio, および fieldEn/degreeEn/bioEn
                                 … Faculty のみで使用（不要なら省略・空文字でOK。contactは通常言語共通）
    ・theme/hobby, themeEn/hobbyEn … Students のみで使用（不要なら省略・空文字でOK）
@@ -101,6 +104,8 @@ window.MEMBERS = [
     name: '澤井 響',
     nameEn: 'Hibiki Sawai',
     graduation: '2029-03-D',
+    school: '早稲田大学大学院 基幹理工学研究科 機械科学・航空宇宙専攻',
+    schoolEn: 'Department of Applied Mechanics and Aerospace Engineering, Graduate School of Fundamental Science and Engineering, Waseda University',
     photo: 'assets/img/members/r6_sawai.jpg',
     theme: 'コアンダ効果を利用したエアターボ・ロケット複合エンジンノズルの推力偏向',
     themeEn: 'Thrust vectoring of an air-turbo-rocket combined-cycle engine nozzle using the Coanda effect',
@@ -114,6 +119,8 @@ window.MEMBERS = [
     name: '松本 倭',
     nameEn: 'Yamato Matsumoto',
     graduation: '2027-03-M',
+    school: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
+    schoolEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
     photo: 'assets/img/members/r7_matsumoto.jpg',
     theme: 'スリーブ可動式ピントル型インジェクタの開発',
     themeEn: 'Development of a sleeve-actuated movable pintle-type injector',
@@ -124,7 +131,10 @@ window.MEMBERS = [
     id: 'member-005',
     status: 'M2',
     name: 'Yuki Kaji',
+    nameEn: 'Yuki Kaji',
     graduation: '2027-03-M',
+    school: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
+    schoolEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
     photo: 'assets/img/members/r7_kaji.jpg',
     theme: 'エアターボ・ロケット複合エンジンにおけるエアロスパイクノズルの概念検討',
     themeEn: 'Conceptual study of an aerospike nozzle for an air-turbo-rocket combined-cycle engine',
@@ -137,6 +147,8 @@ window.MEMBERS = [
     name: '岩崎 葵哉',
     nameEn: 'Aoya Iwasaki',
     graduation: '2026-03-M',
+    school: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
+    schoolEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
     photo: 'assets/img/members/r8_iwasaki.jpg',
     theme: 'ディフレクター設置によるピントル型インジェクタの微粒化性能向上',
     themeEn: 'Improving atomization performance of a pintle-type injector with a deflector',
@@ -149,6 +161,8 @@ window.MEMBERS = [
     name: '田中 海翔',
     nameEn: 'Kaisho Tanaka',
     graduation: '2026-03-M',
+    school: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
+    schoolEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
     photo: 'assets/img/members/r8_tanaka.jpg',
     theme: '同軸二重円状超音速流れの地面衝突効果',
     themeEn: 'Ground impingement effects of coaxial dual supersonic jets',
@@ -161,6 +175,8 @@ window.MEMBERS = [
     name: '山本 格由',
     nameEn: 'Kakuyu Yamamoto',
     graduation: '2026-03-M',
+    school: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
+    schoolEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
     photo: 'assets/img/members/r8_yamamoto.jpg',
     theme: 'エアターボ・ロケット複合エンジンの新サイクル提案',
     themeEn: 'Proposal of a new cycle for an air-turbo-rocket combined-cycle engine',

@@ -92,11 +92,16 @@
     return status;
   }
 
-  function roleLines(m) {
-    var role = lang() === 'en' && m.roleEn ? m.roleEn : m.role;
-    var arr = Array.isArray(role) ? role : (role ? [role] : []);
+  // 配列 or 文字列のフィールドを、<br> 区切りの複数行として整形する
+  // （Faculty の role、Students の school など、同じ扱いをする項目で共通利用）
+  function linesField(m, field) {
+    var enField = field + 'En';
+    var val = lang() === 'en' && m[enField] ? m[enField] : m[field];
+    var arr = Array.isArray(val) ? val : (val ? [val] : []);
     return arr.map(esc).join('<br>');
   }
+  function roleLines(m) { return linesField(m, 'role'); }
+  function schoolLines(m) { return linesField(m, 'school'); }
 
   var COURSE_LABELS_JA = {
     B: { name: '学部', verb: '卒業' },
@@ -170,6 +175,7 @@
   // Students（D1/M1/B4 など）
   function studentCardHtml(m) {
     var name = T(m, 'name');
+    var school = schoolLines(m);
     var theme = T(m, 'theme');
     var hobby = T(m, 'hobby');
     var comment = T(m, 'comment');
@@ -177,6 +183,7 @@
       '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-24 h-24 rounded-full object-cover border-2 border-white flex-shrink-0">' +
       '<div class="text-center sm:text-left">' +
         '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(name) + '</p>' +
+        (school ? '<p class="text-sm text-brand-blue font-bold leading-relaxed">' + school + '</p>' : '') +
         '<p class="text-sm text-brand-blue font-bold">' + esc(gradeLabel(m.status)) + '</p>' +
         (theme ? '<p class="text-sm text-gray-600 mt-2">' + esc(ui('theme')) + esc(theme) + '</p>' : '') +
         (hobby ? '<p class="text-sm text-gray-600 mt-1"><span class="font-bold text-gray-700">' + esc(ui('hobby')) + '</span>　' + esc(hobby) + '</p>' : '') +
