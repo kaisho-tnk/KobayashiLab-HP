@@ -4,6 +4,9 @@
 window.SITE = {
   labName: 'JAXA宇宙科学研究所 宇宙飛翔工学研究系 小林研究室',
   labNameEn: 'Kobayashi Laboratory ISAS/JAXA',
+  // ブラウザのタブに表示される名前（「ページ名 | tabTitle」の形で使われる）
+  tabTitle: '小林研究室 JAXA宇宙科学研究所',
+  tabTitleEn: 'Kobayashi Laboratory ISAS/JAXA',
   // ヘッダーで画面幅に応じて出し分ける、研究室名の3段階（それぞれ必ず2行で表示）。
   // 収まらなければ full → medium → short の順に切り替わり、それでも収まらなければロゴのみになる。
   headerName: {
@@ -11,10 +14,9 @@ window.SITE = {
     medium: { ja: ['JAXA宇宙科学研究所', '小林研究室'], en: ['Kobayashi Laboratory', 'ISAS/JAXA'] },
     short:  { ja: ['JAXA/ISAS', '小林研究室'], en: ['Kobayashi Lab.', 'ISAS/JAXA'] }
   },
-  affiliation: '東京大学大学院 工学系研究科 航空宇宙工学専攻 / 〇〇学部 〇〇学科',
+  affiliation: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
   affiliationEn: 'Department of Aeronautics and Astronautics, The University of Tokyo',
-  copyrightName: '〇〇 Laboratory, The University of Tokyo',
-  copyrightYear: 2026,
+  copyrightText: 'Copyright \u00A9 Kobayashi Laboratory. All rights reserved.',
   contactEmail: '',                   // 例: 'info@example.u-tokyo.ac.jp'（空なら非表示）
   address: '',                        // 例: '東京都文京区本郷7-3-1 工学部〇号館 〇階'
   nav: [

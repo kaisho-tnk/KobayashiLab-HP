@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京大学 〇〇研究室</title>
-    <meta name="description" content="東京大学 〇〇研究室の公式サイト。研究テーマ、メンバー、最新のお知らせを掲載しています。">
+    <title>小林研究室 JAXA宇宙科学研究所</title>
+    <meta name="description" content="小林研究室 JAXA宇宙科学研究所の公式サイト。研究テーマ、メンバー、最新のお知らせを掲載しています。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/js/theme.js"></script>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/icons/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/img/icons/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="assets/img/icons/favicon-128.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         /* ヒーロー画像のゆっくりズーム */
@@ -18,7 +22,7 @@
     </style>
 </head>
 <body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="home">
-    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icons/icon.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
 
 
     <header id="site-header"></header>
@@ -43,12 +47,16 @@
                 <span class="hero-animate inline-block text-white/70 font-medium text-xs sm:text-sm mb-4 tracking-[0.2em]">
                     RESEARCH LABORATORY
                 </span>
-                <h1 class="hero-animate delay-100 text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-4 leading-snug">
-                    <a href="about.html" class="hover:opacity-80 transition-opacity" data-en="Toward a research base that changes the world">世界を変える、次世代の研究拠点へ</a>
+                <h1 class="hero-animate delay-100 text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-4 leading-snug" data-en="Toward a research base that changes the world">
+                    世界を変える、次世代の研究拠点へ
                 </h1>
-                <p class="hero-animate delay-200 text-sm sm:text-base text-gray-300 mb-8 max-w-xl" data-en="From fundamental research to real-world application, we take on challenges across disciplines, creating knowledge that contributes to society.">
+                <p class="hero-animate delay-200 text-sm sm:text-base text-gray-300 mb-3 max-w-xl" data-en="From fundamental research to real-world application, we take on challenges across disciplines, creating knowledge that contributes to society.">
                     基礎から応用まで、分野の垣根を超えた挑戦を続けています。知の創造を通じて、社会に貢献する技術を育みます。
                 </p>
+                <a href="about.html" class="hero-animate delay-200 inline-flex items-center gap-1 text-sm text-white/80 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors mb-8">
+                    <span data-en="Learn More">詳しく見る</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
                 <div class="hero-animate delay-300 flex flex-wrap gap-3">
                     <a href="#section-research" class="px-6 py-2.5 bg-white text-brand-dark font-medium rounded-full hover:bg-gray-100 transition-colors duration-300 text-sm" data-en="View Research">研究テーマを見る</a>
                     <a href="#section-facilities" class="px-6 py-2.5 border border-white/40 text-white font-medium rounded-full hover:bg-white/10 transition-colors duration-300 text-sm" data-en="View Facilities">研究拠点を見る</a>

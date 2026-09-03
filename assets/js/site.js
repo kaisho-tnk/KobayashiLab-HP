@@ -289,6 +289,16 @@
   // 日本語表示のときは、HTMLに書かれた元の文章（日本語）がそのまま使われる。
   function applyStaticTranslations() {
     document.documentElement.lang = LANG;
+
+    // <title>内の研究室名部分（各HTMLファイルに直書きされている）を、
+    // 言語に応じて動的に差し替える。ニュース詳細・研究テーマ詳細など、
+    // JSが別途 document.title を組み立てるページでは、そちらの値で上書きされる
+    if (SITE && SITE.tabTitle && document.title.indexOf(SITE.tabTitle) !== -1) {
+      if (LANG === 'en' && SITE.tabTitleEn) {
+        document.title = document.title.replace(SITE.tabTitle, SITE.tabTitleEn);
+      }
+    }
+
     if (LANG !== 'en') return;
     var nodes = document.querySelectorAll('[data-en]');
     Array.prototype.forEach.call(nodes, function (el) {
@@ -364,7 +374,7 @@
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
           '<div id="site-header-row" class="flex justify-between items-center h-20">' +
             '<a href="' + PATH_PREFIX + 'index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity flex-shrink-0">' +
-              '<img src="' + PATH_PREFIX + 'assets/img/icon.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
+              '<img src="' + PATH_PREFIX + 'assets/img/icons/icon-header.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
               '<span id="header-lab-name-full" class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameFullHtml + '</span>' +
               '<span id="header-lab-name-medium" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameMediumHtml + '</span>' +
               '<span id="header-lab-name-short" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameShortHtml + '</span>' +
@@ -526,7 +536,7 @@
                 relatedLinks +
               '</nav>'
             : '') +
-          '<p class="text-gray-600 text-sm">&copy; ' + esc(SITE.copyrightYear || new Date().getFullYear()) + ' ' + esc(SITE.copyrightName || '') + '</p>' +
+          '<p class="text-gray-600 text-sm">' + esc(SITE.copyrightText || '') + '</p>' +
         '</div>';
     }
   }
@@ -703,7 +713,7 @@
     var item = items[idx];
     var prev = items[idx + 1]; // より古い記事
     var next = items[idx - 1]; // より新しい記事
-    document.title = T(item, 'title') + ' | ' + (LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName || '');
+    document.title = T(item, 'title') + ' | ' + (LANG === 'en' ? (SITE.tabTitleEn || SITE.tabTitle || SITE.labName) : (SITE.tabTitle || SITE.labName) || '');
 
     var navHtml = '';
     if (prev || next) {

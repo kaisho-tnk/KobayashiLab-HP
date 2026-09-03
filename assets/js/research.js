@@ -48,7 +48,7 @@
       var kw = TA(t, 'keywords').join(', ');
       return '<a href="' + esc(t.id) + '.html" class="group flex flex-col h-full bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-gray-300 hover:-translate-y-1 transition-all duration-300"' + delay + '>' +
         '<div class="aspect-[3/2] overflow-hidden ' + (CARD_COLOR[t.cardColor] || CARD_COLOR.blue) + '">' +
-          '<img src="https://placehold.co/600x400/' + (PLACEHOLDER_COLOR[t.cardColor] || PLACEHOLDER_COLOR.blue) + '/ffffff?text=' + esc(t.id) + '" alt="' + esc(T(t, 'title')) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">' +
+          '<img src="https://placehold.co/600x400/' + (PLACEHOLDER_COLOR[t.cardColor] || PLACEHOLDER_COLOR.blue) + '/ffffff?text=' + esc(t.id) + '" alt="' + esc(T(t, 'title')) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">' +
         '</div>' +
         '<div class="flex flex-col flex-grow p-6 sm:p-8">' +
           '<h2 class="text-lg sm:text-xl font-bold text-brand-dark mb-4 group-hover:text-brand-blue transition-colors">' + (i + 1) + '. ' + esc(T(t, 'title')) + '</h2>' +
@@ -64,7 +64,7 @@
     var t = themes().filter(function (x) { return x.id === themeId; })[0];
     if (!t) return;
 
-    document.title = T(t, 'pageTitle') + ' | ' + (window.SITE ? (lang() === 'en' ? (window.SITE.labNameEn || window.SITE.labName) : window.SITE.labName) : '');
+    document.title = T(t, 'pageTitle') + ' | ' + (window.SITE ? (lang() === 'en' ? (window.SITE.tabTitleEn || window.SITE.tabTitle || window.SITE.labName) : (window.SITE.tabTitle || window.SITE.labName)) : '');
 
     var breadcrumbLabel = document.getElementById('theme-breadcrumb-label');
     if (breadcrumbLabel) breadcrumbLabel.textContent = T(t, 'title');
