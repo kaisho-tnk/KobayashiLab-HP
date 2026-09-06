@@ -48,6 +48,11 @@
                                   role と同じ扱いで、複数あれば配列で改行表示されます
    ・field/degree/contact/bio, および fieldEn/degreeEn/bioEn
                                 … Faculty のみで使用（不要なら省略・空文字でOK。contactは通常言語共通）
+   ・links / linksEn           … Faculty のみで使用。外部プロフィール等へのリンクをボタンで表示
+                                  （不要なら省略可）。例:
+                                  links: [{ label: 'researchmap', href: 'https://...' }]
+                                  linksEn は label だけ英語版に差し替えたいときに、同じ順番・
+                                  同じ件数の配列で指定（省略した項目は日本語の label がそのまま使われる）
    ・theme/hobby, themeEn/hobbyEn … Students のみで使用（不要なら省略・空文字でOK）
    ・note / noteEn                … Alumni のみで使用。graduation とあわせて表示される補足
    ・comment / commentEn          … 「ひとこと」欄（Faculty・Students・Staff共通、省略可）
@@ -84,6 +89,14 @@ window.MEMBERS = [
     field: '',
     degree: '',
     contact: '',
+    links: [
+      { label: '▸researchmap', href: 'https://researchmap.jp/read0087706' },
+      { label: 'JAXAインタビュー記事「完全再使用ロケットと水素社会を能代から」', href: 'https://www.isas.jaxa.jp/feature/interview/157.html' }
+    ],
+    linksEn: [
+      { label: '▸researchmap' },
+      { label: 'JAXA Interview: "A Fully Reusable Rocket and a Hydrogen Society, from Noshiro"' }
+    ],
     bio: '1972年、東京都生まれ。東京大学大学院工学系研究科航空宇宙工学専攻博士課程修了。博士（工学）。宇宙科学研究所助手、宇宙航空研究開発機構総合技術研究本部研究員、宇宙科学研究所特任准教授などを経て、2022年より現職。',
     bioEn: 'Born in Tokyo in 1972. Received his Ph.D. in Engineering from the Department of Aeronautics and Astronautics, The University of Tokyo. After serving as Research Associate at ISAS and Researcher at JAXA\u2019s Institute of Aerospace Technology, and as Project Associate Professor at ISAS, he has held his current position since 2022.',
     comment: '目指すのは水素燃料の完全再使用ロケット。宇宙空間に出るまでは大気中の酸素を利用しようという、エアブリーザー型エンジンの開発に取り組んでいます。',

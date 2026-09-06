@@ -41,6 +41,7 @@
       img.src = src;
       img.alt = altText || '';
       img.draggable = false;
+      img.loading = 'lazy';
       return img;
     }
 
@@ -70,8 +71,15 @@
     el.className = 'gallery-post';
     el.id = post.id;
 
-    var track = buildTrack(post.images, T(post, 'title'));
-    el.appendChild(track);
+    // グリッドでは（Instagramの投稿一覧と同様）スワイプ機構は持たせず、
+    // 1枚目の画像だけを静的に表示する。複数枚の閲覧はモーダルを開いてから行う
+    var img = document.createElement('img');
+    img.src = post.images[0];
+    img.alt = T(post, 'title') || '';
+    img.draggable = false;
+    img.loading = 'lazy';
+    img.className = 'gallery-post-thumb';
+    el.appendChild(img);
 
     // 複数枚アイコン（Instagramの「重なった正方形」アイコン相当）
     if (post.images.length > 1) {
@@ -92,15 +100,12 @@
       (post.caption ? '<p class="gallery-overlay-caption">' + esc(T(post, 'caption')) + '</p>' : '');
     el.appendChild(overlay);
 
-    // ドット（複数枚のときだけ）
-    var dotsWrap = buildDots(post.images);
-    if (dotsWrap) el.appendChild(dotsWrap);
-
-    initSwipe(el, track, dotsWrap, post.images.length);
     return el;
   }
 
-  /* ---------- スワイプ ----------
+  /* ---------- スワイプ（モーダル拡大表示でのみ使用） ----------
+     グリッド一覧では複数枚のスワイプ閲覧はさせず（Instagramの投稿一覧と同様）、
+     モーダルを開いたときだけ、以下の操作で画像を切り替えられる。
      ・タッチのスワイプ、マウスでのクリック&ドラッグは、ブラウザ標準の横スクロール＋
        scroll-snap（CSS側で設定）にそのまま任せる。「1枚ずつ確実に止まる」は
        mandatory スナップの標準動作。
@@ -376,20 +381,9 @@
       grid.appendChild(buildPost(post));
     });
 
-    // タッチ端末：1タップで直接、拡大ポップアップを開く
-    // （PC同様の「タップでオーバーレイ表示→もう一度で拡大」という二段階はやめ、
-    //   スマホでは他の写真アプリ同様、一発で開く挙動に揃える）
+    // グリッドは（Instagramの投稿一覧と同様）タッチ・マウス問わず、
+    // 1クリック／1タップで直接モーダルを開く。閲覧はモーダル側でのみ行う
     grid.addEventListener('click', function (e) {
-      var postEl = e.target.closest('.gallery-post');
-      if (!postEl) return;
-      if (window.matchMedia('(hover: none)').matches) {
-        var post = posts.filter(function (p) { return p.id === postEl.id; })[0];
-        if (post) openModal(post);
-      }
-    });
-
-    // ダブルクリック（PC・マウス操作向け）で拡大ポップアップを開く
-    grid.addEventListener('dblclick', function (e) {
       var postEl = e.target.closest('.gallery-post');
       if (!postEl) return;
       var post = posts.filter(function (p) { return p.id === postEl.id; })[0];

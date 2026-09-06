@@ -19,6 +19,17 @@ window.SITE = {
   copyrightText: 'Copyright \u00A9 Kobayashi Laboratory. All rights reserved.',
   contactEmail: '',                   // 例: 'info@example.u-tokyo.ac.jp'（空なら非表示）
   address: '',                        // 例: '東京都文京区本郷7-3-1 工学部〇号館 〇階'
+  // トップページ（index.html）で訪問数をカウントし、members-only.html で表示するための
+  // 識別子（hits.seeyoufarm.com という無料カウンターサービス用）。他サイトと被らなければ
+  // 何でもよく、実在するURLである必要はない。変更するとカウントは1からリセットされる
+  visitorCounterNamespace: 'kobayashi-lab-jaxa-isas.example',
+  // コピーライトのすぐ上に、ひっそりと並べる小さな文字リンク
+  // （サイトポリシー・サイトマップ・研究室メンバー専用ページへの入口）
+  footerUtilityLinks: [
+    { label: 'サイトポリシー', labelEn: 'Site Policy', href: 'policy.html' },
+    { label: 'サイトマップ', labelEn: 'Sitemap', href: 'sitemap.html' },
+    { label: '研究室メンバー専用', labelEn: 'Members Only', href: 'members-only.html' }
+  ],
   nav: [
     { key: 'about',    label: 'About Us',        href: 'about.html' },
     { key: 'research', label: 'Research', href: 'research/index.html' },

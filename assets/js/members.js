@@ -148,6 +148,23 @@
   function ui(key) { return UI[key][lang() === 'en' ? 'en' : 'ja']; }
 
   // Faculty（教授・准教授など）：詳しいプロフィールカード
+  // Faculty の外部プロフィール等へのリンクボタン（researchmapなど）
+  function facultyLinks(m) {
+    if (!m.links || !m.links.length) return '';
+    var isEn = lang() === 'en';
+    return '<div class="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">' +
+      m.links.map(function (l, i) {
+        var enOverride = isEn && m.linksEn && m.linksEn[i] ? m.linksEn[i] : null;
+        var label = enOverride && enOverride.label ? enOverride.label : l.label;
+        return '<a href="' + esc(l.href) + '" target="_blank" rel="noopener" ' +
+          'class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 text-xs sm:text-sm text-gray-600 hover:border-brand-blue hover:text-brand-blue transition-colors">' +
+          esc(label) +
+          '<svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>' +
+          '</a>';
+      }).join('') +
+    '</div>';
+  }
+
   function facultyCardHtml(m) {
     var name = T(m, 'name');
     var field = T(m, 'field');
@@ -155,7 +172,7 @@
     var bio = T(m, 'bio');
     var comment = T(m, 'comment');
     return '<div id="' + esc(m.id) + '" class="member-card flex flex-col md:flex-row items-center md:items-start gap-8 bg-brand-light p-6 sm:p-8 rounded-xl border border-gray-200 w-full hover:border-gray-300 transition-colors duration-300">' +
-      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white flex-shrink-0">' +
+      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white flex-shrink-0" loading="lazy">' +
       '<div class="text-center md:text-left">' +
         '<h3 class="text-xl sm:text-2xl font-bold text-brand-dark">' + esc(name) + '</h3>' +
         '<p class="text-brand-blue font-bold mb-4 leading-relaxed">' + roleLines(m) + '</p>' +
@@ -168,6 +185,7 @@
           (bio ? '<p class="text-gray-600"><span class="font-bold text-gray-700">' + esc(ui('bio')) + '</span>　' + esc(bio) + '</p>' : '') +
           (comment ? '<p class="text-gray-600"><span class="font-bold text-gray-700">' + esc(ui('comment')) + '</span>　' + esc(comment) + '</p>' : '') +
         '</div>' +
+        facultyLinks(m) +
       '</div>' +
     '</div>';
   }
@@ -180,7 +198,7 @@
     var hobby = T(m, 'hobby');
     var comment = T(m, 'comment');
     return '<li id="' + esc(m.id) + '" class="member-card flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 bg-brand-light p-5 sm:p-6 rounded-xl border border-gray-100 hover:border-brand-blue/40 hover:bg-blue-50/40 transition-colors">' +
-      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-24 h-24 rounded-full object-cover border-2 border-white flex-shrink-0">' +
+      '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-24 h-24 rounded-full object-cover border-2 border-white flex-shrink-0" loading="lazy">' +
       '<div class="text-center sm:text-left">' +
         '<p class="text-base sm:text-lg font-bold text-gray-800">' + esc(name) + '</p>' +
         (school ? '<p class="text-sm text-brand-blue font-bold leading-relaxed">' + school + '</p>' : '') +
@@ -310,7 +328,7 @@
       var shortLabel = statusCategory(m.status) === 'student' ? m.status : statusLabel(m.status);
       return '<a href="members.html#' + esc(m.id) + '" class="group flex flex-col items-center gap-2 w-16 flex-shrink-0" title="' + esc(name) + '（' + esc(titleSuffix) + '）">' +
         '<span class="block w-14 h-14 rounded-full overflow-hidden border border-gray-200 group-hover:border-gray-300 transition-colors">' +
-          '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-full h-full object-cover">' +
+          '<img src="' + esc(m.photo) + '" alt="' + esc(name) + '" class="w-full h-full object-cover" loading="lazy">' +
         '</span>' +
         '<span class="text-[11px] text-gray-500 text-center leading-tight">' + esc(shortLabel) + '<br>' + esc(name) + '</span>' +
       '</a>';

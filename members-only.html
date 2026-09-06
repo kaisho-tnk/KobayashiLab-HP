@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究室メンバー専用 | 小林研究室 JAXA宇宙科学研究所</title>
+    <meta name="description" content="小林研究室 JAXA宇宙科学研究所 研究室メンバー専用ページです。">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/theme.js"></script>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/icons/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/img/icons/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="assets/img/icons/favicon-128.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="assets/img/icons/favicon-256.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-brand-light flex flex-col min-h-screen page-fade-enter" data-page="members-only">
+    <div id="page-transition-overlay"><div class="spinner-wrap"><img src="assets/img/icons/labicon-1000.png" alt=""><span class="spinner-ring" aria-hidden="true"></span></div></div>
+
+    <header id="site-header"></header>
+
+    <main class="flex-grow pt-20">
+        <div class="page-header-bg py-14 sm:py-16 text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold text-brand-dark tracking-widest uppercase">Members Only</h1>
+            <p class="text-gray-500 mt-2" data-en="For Kobayashi Laboratory Members">研究室メンバー専用</p>
+        </div>
+
+        <section class="section-padding">
+            <div class="max-w-md mx-auto page-container">
+
+                <!-- ログインフォーム -->
+                <div id="login-panel" class="fade-up bg-white rounded-xl border border-gray-200 p-6 sm:p-8">
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed" data-en="This page is for laboratory members only. Please enter the shared username and password to continue.">
+                        このページは研究室メンバー専用です。共有のユーザー名とパスワードを入力してください。
+                    </p>
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="login-username" class="block text-sm font-medium text-gray-700 mb-1" data-en="Username">ユーザー名</label>
+                            <input type="text" id="login-username" name="username" autocomplete="username"
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue">
+                        </div>
+                        <div>
+                            <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1" data-en="Password">パスワード</label>
+                            <input type="password" id="login-password" name="password" autocomplete="current-password"
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue">
+                        </div>
+                        <p id="login-error" class="hidden text-sm text-red-600" data-en="Incorrect username or password.">ユーザー名またはパスワードが違います。</p>
+                        <button type="submit" class="w-full py-2.5 bg-brand-dark text-white font-medium rounded-lg hover:bg-gray-800 transition-colors text-sm">
+                            <span data-en="Log In">ログイン</span>
+                        </button>
+                    </form>
+                    <p class="text-xs text-gray-400 mt-6 leading-relaxed" data-en="Note: This page uses simple client-side verification and is not intended for protecting sensitive information.">
+                        ※ このページは簡易的な確認機能であり、重要な情報の保護を目的としたものではありません。
+                    </p>
+                </div>
+
+                <!-- ログイン後に表示されるコンテンツ -->
+                <div id="member-content" class="hidden fade-up">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 text-center">
+                        <p class="text-sm text-gray-500 mb-1" data-en="Total Site Visitors">サイトの総訪問者数</p>
+                        <div id="visitor-counter-wrap" class="flex justify-center py-4">
+                            <img id="visitor-counter-badge" src="" alt="Visitor count" class="h-8">
+                        </div>
+                        <p class="text-xs text-gray-400" data-en="Counts visits to the homepage. There may be a short delay before a new visit is reflected.">
+                            トップページへのアクセスをカウントしています。反映まで少し時間差がある場合があります。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="data/site.js"></script>
+    <script src="data/news.js"></script>
+    <script src="assets/js/site.js"></script>
+    <script src="assets/js/members-only.js"></script>
+</body>
+</html>

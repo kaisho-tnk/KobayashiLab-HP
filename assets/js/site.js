@@ -373,13 +373,13 @@
       header.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
           '<div id="site-header-row" class="flex justify-between items-center h-20">' +
-            '<a href="' + PATH_PREFIX + 'index.html" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity flex-shrink-0">' +
-              '<img src="' + PATH_PREFIX + 'assets/img/icons/icon-header.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
+            '<a href="' + PATH_PREFIX + 'index.html" id="header-left-block" class="flex items-center gap-2.5 hover:opacity-70 transition-opacity flex-shrink-0">' +
+              '<img src="' + PATH_PREFIX + 'assets/img/icons/favicon-128.png" alt="" class="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0" aria-hidden="true">' +
               '<span id="header-lab-name-full" class="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameFullHtml + '</span>' +
               '<span id="header-lab-name-medium" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameMediumHtml + '</span>' +
               '<span id="header-lab-name-short" class="hidden text-base sm:text-lg md:text-xl font-semibold tracking-tight text-brand-dark leading-tight overflow-hidden">' + labNameShortHtml + '</span>' +
             '</a>' +
-            '<div class="flex items-center gap-4 sm:gap-5 flex-shrink-0">' +
+            '<div id="header-right-block" class="flex items-center gap-4 sm:gap-5 flex-shrink-0">' +
               '<nav id="pc-nav" class="hidden space-x-8" aria-label="メインナビゲーション">' + pcNav + '</nav>' +
               '<div id="header-lang-switcher" class="border-l border-gray-200 pl-4 sm:pl-5">' + langSwitcherHtml() + '</div>' +
               '<button id="mobile-menu-btn" class="hidden text-gray-600 hover:text-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">' +
@@ -390,17 +390,25 @@
         '</div>' +
         '<div id="mobile-menu" class="hidden bg-white border-t border-gray-100">' +
           '<div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">' + spNav + '</div>' +
-          '<div id="mobile-lang-switcher" class="hidden px-5 pb-4 pt-1 border-t border-gray-100">' + langSwitcherHtml() + '</div>' +
+          '<div id="mobile-lang-switcher" class="hidden px-5 pb-4 pt-4 border-t border-gray-100">' + langSwitcherHtml() + '</div>' +
         '</div>';
 
       // ヘッダーの中身（ロゴ＋ラボ名＋ナビ＋言語切替）が実際に1行に収まるかを測り、
       // 優先順位: ①言語切替・ハンバーガー(できる限り確保) → ②PCナビ(収まらなければハンバーガーへ)
       // → ③ラボ名を フル→中間→短縮 の順に切り替え → ④それでも収まらなければラボ名ごと非表示にし、ロゴだけ残す
       // → ⑤それでも収まらなければ、言語切替をハンバーガーメニューの中へ格納する
+      // ヘッダー左（ロゴ＋ラボ名）と右（ナビ＋言語切替＋ハンバーガー）の間に、
+      // 最低限このくらいは空けておきたい、という余白（px）。
+      // 実際の隙間がこれを下回ったら、「まだ完全にはみ出してはいない」段階でも
+      // 先回りして1段階縮小する。
+      var MIN_HEADER_GAP = 16;
+
       function fitHeaderNav() {
         var row = document.getElementById('site-header-row');
         var nav = document.getElementById('pc-nav');
         var menuBtn = document.getElementById('mobile-menu-btn');
+        var leftBlock = document.getElementById('header-left-block');
+        var rightBlock = document.getElementById('header-right-block');
         var labTiers = [
           document.getElementById('header-lab-name-full'),
           document.getElementById('header-lab-name-medium'),
@@ -408,7 +416,7 @@
         ];
         var headerLang = document.getElementById('header-lang-switcher');
         var mobileLang = document.getElementById('mobile-lang-switcher');
-        if (!row || !nav || !menuBtn) return;
+        if (!row || !nav || !menuBtn || !leftBlock || !rightBlock) return;
 
         function showLabTier(index) {
           // index: 0=full, 1=medium, 2=short, -1=すべて非表示（ロゴのみ）
@@ -416,6 +424,15 @@
             if (!el) return;
             el.classList.toggle('hidden', i !== index);
           });
+        }
+
+        // 左右のブロックが実際に画面上でどれだけ離れているかを測る。
+        // これが MIN_HEADER_GAP を下回っていれば「窮屈」とみなす
+        // （scrollWidth基準の「完全にはみ出したかどうか」より早いタイミングで反応する）
+        function gapTooSmall() {
+          var leftRect = leftBlock.getBoundingClientRect();
+          var rightRect = rightBlock.getBoundingClientRect();
+          return (rightRect.left - leftRect.right) < MIN_HEADER_GAP;
         }
 
         // 一旦「理想の状態」（ナビ表示・ラボ名フル表記・言語切替はヘッダー側）にしてから、
@@ -427,7 +444,7 @@
         if (headerLang) headerLang.classList.remove('hidden');
         if (mobileLang) mobileLang.classList.add('hidden');
 
-        if (row.scrollWidth > row.clientWidth + 1) {
+        if (gapTooSmall()) {
           // まずPCナビをハンバーガーに切り替える
           nav.classList.add('hidden');
           nav.classList.remove('flex');
@@ -435,18 +452,18 @@
 
           // それでも収まらなければ、ラボ名を フル→中間→短縮 の順に切り替えていく
           var tierIndex = 0;
-          while (row.scrollWidth > row.clientWidth + 1 && tierIndex < labTiers.length - 1) {
+          while (gapTooSmall() && tierIndex < labTiers.length - 1) {
             tierIndex++;
             showLabTier(tierIndex);
           }
 
           // それでも収まらなければ、短縮表記も諦めてロゴだけにする
-          if (row.scrollWidth > row.clientWidth + 1) {
+          if (gapTooSmall()) {
             showLabTier(-1);
           }
 
           // それでもまだ収まらなければ、言語切替をハンバーガーメニューの中へ移す
-          if (headerLang && row.scrollWidth > row.clientWidth + 1) {
+          if (headerLang && gapTooSmall()) {
             headerLang.classList.add('hidden');
             if (mobileLang) mobileLang.classList.remove('hidden');
           }
@@ -522,10 +539,15 @@
           '" class="hover:text-white underline">' + esc(SITE.contactEmail) + '</a></p>';
       }
 
+      var utilityLinks = (SITE.footerUtilityLinks || []).map(function (l) {
+        var label = LANG === 'en' && l.labelEn ? l.labelEn : l.label;
+        return '<a href="' + PATH_PREFIX + esc(l.href) + '" class="hover:text-white transition-colors">' + esc(label) + '</a>';
+      }).join('<span class="mx-2" aria-hidden="true">&middot;</span>');
+
       footer.className = 'bg-brand-dark text-white py-14 mt-auto';
       footer.innerHTML =
         '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">' +
-          '<p class="text-lg font-semibold mb-2 tracking-wide">' + esc(LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName) + '</p>' +
+          '<p class="text-lg font-semibold mb-2 tracking-wide"><a href="' + PATH_PREFIX + 'index.html" class="hover:text-gray-300 transition-colors">' + esc(LANG === 'en' ? (SITE.labNameEn || SITE.labName) : SITE.labName) + '</a></p>' +
           '<p class="text-sm text-gray-500 mb-4">' + esc(LANG === 'en' ? (SITE.affiliationEn || SITE.affiliation) : SITE.affiliation) + '</p>' +
           (extra ? '<div class="mb-6 space-y-1">' + extra + '</div>' : '') +
           '<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-sm text-gray-500" aria-label="フッターナビゲーション">' +
@@ -535,6 +557,9 @@
             ? '<nav class="w-full max-w-[328px] mx-auto flex justify-between items-center mb-8 pt-6 border-t border-white/10" aria-label="関連リンク">' +
                 relatedLinks +
               '</nav>'
+            : '') +
+          (utilityLinks
+            ? '<nav class="flex flex-wrap justify-center gap-y-2 mb-3 text-sm text-gray-600" aria-label="サイトポリシー等へのリンク">' + utilityLinks + '</nav>'
             : '') +
           '<p class="text-gray-600 text-sm">' + esc(SITE.copyrightText || '') + '</p>' +
         '</div>';
@@ -924,5 +949,26 @@
 
     initScrollAnimation();
     scrollToHashTarget();
+
+    // サイト訪問者カウンター：トップページの読み込みごとに1カウントする
+    // （見えない1px画像として読み込むだけ。表示は members-only.html 側で行う）
+    // ・カウント先は外部サービス（hits.seeyoufarm.com）のため、このHTML自体が
+    //   ローカル/GitHub/本番サーバーのどこから配信されていても同じように動いてしまう。
+    //   → ローカルでの動作確認や、本番サーバー設置前のGitHub Pages（デバッグ用）での
+    //     閲覧のたびに本番の訪問者数が水増しされないよう、以下のホスト名では
+    //     そもそも加算しないようにする。本番サーバーに設置したら自動的にカウント対象になる
+    var NON_PRODUCTION_HOSTS = [
+      'localhost', '127.0.0.1', '',              // ローカル環境
+      'kakusqu.github.io', 'kaisho-tnk.github.io' // 本番サーバー設置前のGitHub Pages（デバッグ用）
+    ];
+    var isLocalTest = NON_PRODUCTION_HOSTS.indexOf(window.location.hostname) !== -1;
+    if (!isLocalTest && document.body.getAttribute('data-page') === 'home' && SITE.visitorCounterNamespace) {
+      var counterPixel = document.createElement('img');
+      counterPixel.src = 'https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=' + encodeURIComponent(SITE.visitorCounterNamespace);
+      counterPixel.alt = '';
+      counterPixel.setAttribute('aria-hidden', 'true');
+      counterPixel.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;';
+      document.body.appendChild(counterPixel);
+    }
   });
 })();
