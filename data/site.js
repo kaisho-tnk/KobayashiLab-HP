@@ -3,7 +3,7 @@
    ============================================================ */
 window.SITE = {
   labName: 'JAXA宇宙科学研究所 宇宙飛翔工学研究系 小林研究室',
-  labNameEn: 'Kobayashi Laboratory ISAS/JAXA',
+  labNameEn: 'Kobayashi Laboratory, Space Flight Systems, Institute of Space and Astronautical Science/JAXA',
   // ブラウザのタブに表示される名前（「ページ名 | tabTitle」の形で使われる）
   tabTitle: '小林研究室 JAXA宇宙科学研究所',
   tabTitleEn: 'Kobayashi Laboratory ISAS/JAXA',
@@ -15,7 +15,7 @@ window.SITE = {
     short:  { ja: ['JAXA/ISAS', '小林研究室'], en: ['Kobayashi Lab.', 'ISAS/JAXA'] }
   },
   affiliation: '東京大学大学院 工学系研究科 航空宇宙工学専攻',
-  affiliationEn: 'Department of Aeronautics and Astronautics, The University of Tokyo',
+  affiliationEn: 'Department of Aeronautics and Astronautics, Graduate School of Engineering, The University of Tokyo',
   copyrightText: 'Copyright \u00A9 Kobayashi Laboratory. All rights reserved.',
   contactEmail: '',                   // 例: 'info@example.u-tokyo.ac.jp'（空なら非表示）
   address: '',                        // 例: '東京都文京区本郷7-3-1 工学部〇号館 〇階'
